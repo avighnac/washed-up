@@ -1,6 +1,21 @@
 #define pressed(b) (input.buttons[b].is_down && input.buttons[b].changed)
 #define draw_player(x, y) (draw_rect(x, y, x+speed, y+speed, 0xffffff))
 
+#define str(x) std::to_string(x)
+
+#include "Sprites/Beach.hpp"
+void drawSprite(int startX, int startY, int size,
+                std::vector<std::vector<unsigned int>> &spriteVec) {
+  for (auto y = 0; y < spriteVec.size(); y++) {
+    for (auto x = 0; x < spriteVec[y].size(); x++) {
+      draw_rect(
+          startX + x * size, startY + y * size, startX + (x + 1) * size,
+          startY + (y + 1) * size,
+          spriteVec[spriteVec.size() - y - 1][spriteVec[y].size() - x - 1]);
+    }
+  }
+}
+
 struct Button_State {
   bool is_down;
   bool changed;
@@ -27,6 +42,8 @@ Input input = {};
 float playerX = 0.0f;
 float playerY = 0.0f;
 float speed;
+
+int beachLocation = 0;
 
 void washedUp(HWND& window) {
   HDC hdc = GetDC(window);
@@ -63,8 +80,16 @@ void washedUp(HWND& window) {
       DispatchMessage(&message);
     }
     }
-
+    //This drawSprite function draws the background (beach).
     clear_screen(0x0000ff);
+    if (beachLocation <= -750)
+      beachLocation = 90;
+    if (beachLocation >= 92)
+      beachLocation = -700;
+    drawSprite(beachLocation - speed,
+               buffer_height - (100 * (buffer_width) / 200) -
+                   (55 * (buffer_width - 38) / 1098),
+               (buffer_width) / 200, Beach);
 
     if (pressed(BUTTON_LEFT))
       playerX -= speed;
@@ -75,18 +100,16 @@ void washedUp(HWND& window) {
     if (pressed(BUTTON_UP))
       playerY += speed;
 
-    draw_player(playerX, playerY);
-    draw_rect(buffer_width / 8 - 1, 0, buffer_width / 8, buffer_height,
-              0x000000);
-    draw_rect(6 * buffer_width / 7 - 1, 0,
-              6 * buffer_width / 7,
-              buffer_height,
-              0x000000);
+    draw_player(playerX + buffer_width / 4, playerY);
 
-    if (playerX <= buffer_width / 8)
-      playerX = buffer_width / 8;
-    if (playerX + speed >= 6 * buffer_width / 7)
-      playerX = 6 * buffer_width / 7 - speed;
+    if (playerX <= -buffer_width / 8 && pressed(BUTTON_LEFT)) {
+      playerX = -buffer_width / 8;
+      beachLocation += speed;
+    }
+    if (playerX + speed >= 17 * buffer_width / 28 && pressed(BUTTON_RIGHT)) {
+      playerX = 17 * buffer_width / 28 - speed;
+      beachLocation -= speed;
+    }
 
     StretchDIBits(hdc, 0, 0, buffer_width, buffer_height, 0, 0, buffer_width,
                   buffer_height, buffer_memory, &buffer_bitmap_info,
