@@ -4,14 +4,18 @@
 #define str(x) std::to_string(x)
 
 #include "Sprites/Beach.hpp"
+#include "Sprites/PlasticBottle.hpp"
+
 void drawSprite(int startX, int startY, int size,
                 std::vector<std::vector<unsigned int>> &spriteVec) {
   for (auto y = 0; y < spriteVec.size(); y++) {
     for (auto x = 0; x < spriteVec[y].size(); x++) {
-      draw_rect(
-          startX + x * size, startY + y * size, startX + (x + 1) * size,
-          startY + (y + 1) * size,
-          spriteVec[spriteVec.size() - y - 1][spriteVec[y].size() - x - 1]);
+      if (spriteVec[spriteVec.size() - y - 1][spriteVec[y].size() - x - 1] !=
+          0xffffff)
+        draw_rect(
+            startX + x * size, startY + y * size, startX + (x + 1) * size,
+            startY + (y + 1) * size,
+            spriteVec[spriteVec.size() - y - 1][spriteVec[y].size() - x - 1]);
     }
   }
 }
@@ -29,6 +33,7 @@ enum {
   BUTTON_LEFT,
   BUTTON_RIGHT,
   BUTTON_ENTER,
+  BUTTON_CONTROL,
 
   BUTTON_COUNT,
 };
@@ -39,17 +44,77 @@ struct Input {
 
 Input input = {};
 
-float playerX = 0.0f;
-float playerY = 0.0f;
+int playerX = 0;
+int playerY = 0;
 float size = buffer_height / 6;
-float speed = 50;
+float speed = 75;
 
-int beachLocation = 0;
+int beachCoordinates = 0, wasteCoordinatesX = 0;
+
+bool boostedSpeed = false;
+
+class Sprite {
+private:
+
+public:
+  std::string spriteName;
+  int startX, startY, wasteCoords;
+  bool isSetX = 0, isSetY = 0;
+  bool deleted = false;
+
+  void setStartX(int startx) {
+    if (!isSetX) {
+      startX = startx;
+      isSetX = true;
+    }
+  }
+
+  void setStartY(int starty) {
+    if (!isSetY) {
+      startY = starty;
+      isSetY = true;
+    }
+  }
+
+  void deleteSprite () { deleted = true; }
+
+  void draw() {
+    if (!deleted) {
+      if (spriteName == "PlasticBottle") {
+        drawSprite(startX + wasteCoords, startY, 1, PlasticBottle);
+      }
+    }
+  }
+};
+
+#include <random>
+
+int randomNumber(int start, int end) {
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<> distr(start, end);
+  return distr(gen);
+}
+
+static void erase_element_at_pos(std::vector<Sprite>& vec, size_t position) {
+  std::vector<Sprite> answer;
+  for (auto i = 0; i < vec.size(); i++) {
+    if (i != position)
+      answer.push_back(vec[i]);
+  }
+  vec = answer;
+}
 
 void washedUp(HWND& window) {
+
   HDC hdc = GetDC(window);
   
   size = buffer_height / 6;
+
+  int trashPerRound = 5;
+  std::vector<Sprite> sprites(trashPerRound);
+
+  int score = 0;
 
   while (running) {
     MSG message;
@@ -73,6 +138,7 @@ void washedUp(HWND& window) {
         process_button(BUTTON_LEFT, VK_LEFT);
         process_button(BUTTON_RIGHT, VK_RIGHT);
         process_button(BUTTON_ENTER, VK_RETURN);
+        process_button(BUTTON_CONTROL, VK_CONTROL);
       }
     } break;
 
@@ -81,36 +147,84 @@ void washedUp(HWND& window) {
       DispatchMessage(&message);
     }
     }
-    clear_screen(0x0000ff);
-    if (beachLocation <= -750)
-      beachLocation = speed;
-    if (beachLocation >= 92)
-      beachLocation = -700;
+    //Check whether all trash has been picked up, if so
+    //spawn more.
+    if (sprites.empty()) {
+      for (auto i = 0; i < trashPerRound; i++) {
+        Sprite spr;
+        sprites.push_back(spr);
+      }
+    }
+
+    if (beachCoordinates <= -750)
+      beachCoordinates = speed;
+    if (beachCoordinates >= 92)
+      beachCoordinates = -700;
     //This drawSprite function draws the background (beach).
-    drawSprite(beachLocation - speed,
+    drawSprite(beachCoordinates - speed,
                buffer_height - (100 * (buffer_width) / 200) -
                    (55 * (buffer_width - 38) / 1098),
                (buffer_width) / 200, Beach);
 
-    if (pressed(BUTTON_LEFT))
-      playerX -= speed;
-    if (pressed(BUTTON_RIGHT))
-      playerX += speed;
-    if (pressed(BUTTON_DOWN))
-      playerY -= speed;
-    if (pressed(BUTTON_UP))
-      playerY += speed;
+    if (!sprites.empty()) {
+      for (auto i = 1; i <= sprites.size() * 2; i += 2)
+        draw_rect(buffer_width / 20 * 19, buffer_height / 4 + i * 20,
+                  buffer_width / 20 * 19 + 20,
+                  buffer_height / 4 + 20 + i * 20, 0x0000ff);
+    }
+
+    if (pressed(BUTTON_LEFT)) playerX -= speed;
+    if (pressed(BUTTON_RIGHT)) playerX += speed;
+    if (pressed(BUTTON_DOWN)) playerY -= speed;
+    if (pressed(BUTTON_UP)) playerY += speed;
+
+    if (playerY < 0)
+      playerY = 0;
+    if (playerY > buffer_height - size)
+      playerY = buffer_height - size;
 
     draw_player(playerX + buffer_width / 4, playerY);
 
     if (playerX <= -buffer_width / 8 && pressed(BUTTON_LEFT)) {
       playerX = -buffer_width / 8;
-      beachLocation += speed;
+      beachCoordinates += speed;
+      wasteCoordinatesX += speed;
     }
     if (playerX + speed >= 17 * buffer_width / 28 && pressed(BUTTON_RIGHT)) {
       playerX = 17 * buffer_width / 28 - speed;
-      beachLocation -= speed;
+      beachCoordinates -= speed;
+      wasteCoordinatesX -= speed;
     }
+
+    for (auto i = 0; i < sprites.size(); i++) {
+      sprites[i].spriteName = "PlasticBottle";
+      sprites[i].setStartX(randomNumber(playerX - buffer_width / 4, playerX + buffer_width));
+      sprites[i].setStartY(randomNumber(0, buffer_height / 5 * 3));
+      sprites[i].wasteCoords = wasteCoordinatesX;
+      sprites[i].draw();
+
+      /* draw_text(hdc, "PX is " + str(playerX + buffer_width / 4), 100, 100, 3,
+                   0, 0xffffff);
+      draw_text(hdc, "PY is " + str(playerY), 400, 100, 3, 0, 0xffffff);
+      draw_text(hdc, "WX is " + str(sprites[i].startX + wasteCoordinatesX), 100,
+                125 * (i+1), 3, 0, 0xffffff);
+      draw_text(hdc, "WY is " + str(sprites[i].startY), 100,
+                150 * (i+1), 3, 0, 0xffffff); */
+
+      /* The <= 50 is a convience feature. It makes it so that 
+         the item would still collect if you were +- 50 pixels away from its hitbox */
+      if (abs((playerX + buffer_width / 4) - (sprites[i].startX + wasteCoordinatesX) <= 50) && abs((playerY) - (sprites[i].startY)) <= 50) {
+        if (pressed(BUTTON_ENTER)) {
+          score++;
+          erase_element_at_pos(sprites, i);
+          i--;
+        }
+      }
+    }
+
+    draw_text(hdc, str(score), buffer_width / 10 * 9,
+              (buffer_height / 10 * 9), buffer_width / 300, 0,
+              0xffffff);
 
     StretchDIBits(hdc, 0, 0, buffer_width, buffer_height, 0, 0, buffer_width,
                   buffer_height, buffer_memory, &buffer_bitmap_info,
