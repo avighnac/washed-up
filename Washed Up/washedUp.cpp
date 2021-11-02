@@ -1,5 +1,5 @@
 #define pressed(b) (input.buttons[b].is_down && input.buttons[b].changed)
-#define draw_player(x, y) (draw_rect(x, y, x+speed, y+speed, 0xffffff))
+#define draw_player(x, y) (draw_rect(x, y, x+size, y+size, 0xffffff))
 
 #define str(x) std::to_string(x)
 
@@ -41,14 +41,15 @@ Input input = {};
 
 float playerX = 0.0f;
 float playerY = 0.0f;
-float speed;
+float size = buffer_height / 6;
+float speed = 50;
 
 int beachLocation = 0;
 
 void washedUp(HWND& window) {
   HDC hdc = GetDC(window);
-
-  speed = buffer_height / 6;
+  
+  size = buffer_height / 6;
 
   while (running) {
     MSG message;
@@ -80,12 +81,12 @@ void washedUp(HWND& window) {
       DispatchMessage(&message);
     }
     }
-    //This drawSprite function draws the background (beach).
     clear_screen(0x0000ff);
     if (beachLocation <= -750)
-      beachLocation = 90;
+      beachLocation = speed;
     if (beachLocation >= 92)
       beachLocation = -700;
+    //This drawSprite function draws the background (beach).
     drawSprite(beachLocation - speed,
                buffer_height - (100 * (buffer_width) / 200) -
                    (55 * (buffer_width - 38) / 1098),
