@@ -1,10 +1,13 @@
-#define pressed(b) (input.buttons[b].is_down && input.buttons[b].changed)
+#define pressed(b) (input.buttons[b].is_down)
 #define draw_player(x, y) (draw_rect(x, y, x+size, y+size, 0xffffff))
 
 #define str(x) std::to_string(x)
 
 #include "Sprites/Beach.hpp"
 #include "Sprites/PlasticBottle.hpp"
+#include "Sprites/PlasticBottleAlt.hpp"
+#include "Sprites/TrashBag.hpp"
+#include "Sprites/RustedBlockOfIron.hpp"
 
 void drawSprite(int startX, int startY, int size,
                 std::vector<std::vector<unsigned int>> &spriteVec) {
@@ -47,11 +50,20 @@ Input input = {};
 int playerX = 0;
 int playerY = 0;
 float size = buffer_height / 6;
-float speed = 75;
+float speed = 5;
 
 int beachCoordinates = 0, wasteCoordinatesX = 0;
 
 bool boostedSpeed = false;
+
+#include <random>
+
+int randomNumber(int start, int end) {
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<> distr(start, end);
+  return distr(gen);
+}
 
 class Sprite {
 private:
@@ -59,7 +71,7 @@ private:
 public:
   std::string spriteName;
   int startX, startY, wasteCoords;
-  bool isSetX = 0, isSetY = 0;
+  bool isSetX = 0, isSetY = 0, isSetName = 0;
   bool deleted = false;
 
   void setStartX(int startx) {
@@ -76,25 +88,44 @@ public:
     }
   }
 
+  void setName(std::string name) {
+    if (!isSetName) {
+      spriteName = name;
+      isSetName = true;
+    }
+  }
+
   void deleteSprite () { deleted = true; }
 
-  void draw() {
+  bool spriteType = false;
+  int randomSprite;
+
+  int draw() {
     if (!deleted) {
       if (spriteName == "PlasticBottle") {
-        drawSprite(startX + wasteCoords, startY, 1, PlasticBottle);
+        if (!spriteType) {
+          randomSprite = randomNumber(0, 1);
+          spriteType = 1;
+        }
+        if (randomSprite == 1)
+          drawSprite(startX + wasteCoords, startY, 1, PlasticBottle);
+        else
+          drawSprite(startX + wasteCoords, startY, 1, PlasticBottleAlt);
+        return 15;
+      }
+
+      if (spriteName == "TrashBag") {
+        drawSprite(startX + wasteCoords, startY, 1, TrashBag);
+        return 50;
+      }
+
+      if (spriteName == "RustedBlockOfIron") {
+        drawSprite(startX + wasteCoords, startY, 1, RustedBlockOfIron);
+        return 10;
       }
     }
   }
 };
-
-#include <random>
-
-int randomNumber(int start, int end) {
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  std::uniform_int_distribution<> distr(start, end);
-  return distr(gen);
-}
 
 static void erase_element_at_pos(std::vector<Sprite>& vec, size_t position) {
   std::vector<Sprite> answer;
@@ -197,11 +228,22 @@ void washedUp(HWND& window) {
     }
 
     for (auto i = 0; i < sprites.size(); i++) {
-      sprites[i].spriteName = "PlasticBottle";
+      auto randNum = randomNumber(0, 2);
+      switch (randNum) {
+      case 0:
+        sprites[i].setName("PlasticBottle");
+        break;
+      case 1:
+        sprites[i].setName("TrashBag");
+        break;
+      case 2:
+        sprites[i].setName("RustedBlockOfIron");
+        break;
+      }
       sprites[i].setStartX(randomNumber(playerX - buffer_width / 4, playerX + buffer_width));
       sprites[i].setStartY(randomNumber(0, buffer_height / 5 * 3));
       sprites[i].wasteCoords = wasteCoordinatesX;
-      sprites[i].draw();
+      auto pointsForPickup = sprites[i].draw();
 
       /* draw_text(hdc, "PX is " + str(playerX + buffer_width / 4), 100, 100, 3,
                    0, 0xffffff);
@@ -213,9 +255,9 @@ void washedUp(HWND& window) {
 
       /* The <= 50 is a convience feature. It makes it so that 
          the item would still collect if you were +- 50 pixels away from its hitbox */
-      if (abs((playerX + buffer_width / 4) - (sprites[i].startX + wasteCoordinatesX) <= 50) && abs((playerY) - (sprites[i].startY)) <= 50) {
+      if (abs((playerX + buffer_width / 4) - (sprites[i].startX + wasteCoordinatesX) <= 50) && abs(playerY - sprites[i].startY) <= 25) {
         if (pressed(BUTTON_ENTER)) {
-          score++;
+          score += pointsForPickup;
           erase_element_at_pos(sprites, i);
           i--;
         }
