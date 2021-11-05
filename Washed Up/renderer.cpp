@@ -1,5 +1,3 @@
-#include <vector>
-
 inline int clamp(int min, int val, int max) {
   if (val < min)
     return min;

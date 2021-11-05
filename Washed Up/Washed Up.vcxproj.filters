@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Precompiled Header Config">
+      <UniqueIdentifier>{97f8ebc9-09e6-4892-befc-fcdbf181e20a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="win32Platform.cpp">
@@ -23,6 +26,9 @@
     </ClCompile>
     <ClCompile Include="washedUp.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Precompiled Header Config</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -37,5 +43,10 @@
     <Image Include="Washed Up.ico">
       <Filter>Resource Files</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.hpp">
+      <Filter>Precompiled Header Config</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

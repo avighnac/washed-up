@@ -1,5 +1,7 @@
-#include <windows.h>
-#include <string>
+#include "pch.hpp"
+/* NOTE : Other header files like <windows.h>
+   and <string> are included in pch.hpp, which
+   is a pre-compiled header.*/
 
 bool running = true;
 
@@ -66,15 +68,10 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
   window_class.lpfnWndProc = window_callback;
 
   RegisterClass(&window_class);
-  /* HWND window = CreateWindowExW(
-      0, class_name, window_class.lpszClassName, WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, CW_USEDEFAULT, GetSystemMetrics(SM_CXSCREEN),
-      GetSystemMetrics(SM_CXSCREEN), NULL, NULL, hInstance, NULL);
-  ShowWindow(window, nShowCmd);*/
-  HWND window = CreateWindowExW(
-      0, class_name, window_class.lpszClassName, WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
-      CW_USEDEFAULT, NULL, NULL, hInstance, NULL);
+  HWND window = CreateWindowExW(0, class_name, window_class.lpszClassName,
+                                WS_OVERLAPPEDWINDOW, CW_USEDEFAULT,
+                                CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+                                NULL, NULL, hInstance, NULL);
   ShowWindow(window, nShowCmd);
   HDC hdc = GetDC(window);
 

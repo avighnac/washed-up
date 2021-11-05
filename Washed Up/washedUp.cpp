@@ -3,12 +3,6 @@
 
 #define str(x) std::to_string(x)
 
-#include "Sprites/Beach.hpp"
-#include "Sprites/PlasticBottle.hpp"
-#include "Sprites/PlasticBottleAlt.hpp"
-#include "Sprites/TrashBag.hpp"
-#include "Sprites/RustedBlockOfIron.hpp"
-
 void drawSprite(int startX, int startY, int size,
                 std::vector<std::vector<unsigned int>> &spriteVec) {
   for (auto y = 0; y < spriteVec.size(); y++) {
@@ -56,8 +50,6 @@ int beachCoordinates = 0, wasteCoordinatesX = 0;
 
 bool boostedSpeed = false;
 
-#include <random>
-
 int randomNumber(int start, int end) {
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -70,7 +62,7 @@ private:
 
 public:
   std::string spriteName;
-  int startX, startY, wasteCoords;
+  int startX, startY, endX, endY, wasteCoords;
   bool isSetX = 0, isSetY = 0, isSetName = 0;
   bool deleted = false;
 
@@ -92,6 +84,19 @@ public:
     if (!isSetName) {
       spriteName = name;
       isSetName = true;
+
+      if (name == "PlasticBottle") {
+        endX = Sprites::PlasticBottle[0].size() + startX;
+        endY = Sprites::PlasticBottle.size() + startY;
+      }
+      if (name == "TrashBag") {
+        endX = Sprites::TrashBag[0].size() + startX;
+        endY = Sprites::TrashBag.size() + startY;
+      }
+      if (name == "RustedBlockOfIron") {
+        endX = Sprites::RustedBlockOfIron[0].size() + startX;
+        endY = Sprites::RustedBlockOfIron.size() + startY;
+      }
     }
   }
 
@@ -108,19 +113,19 @@ public:
           spriteType = 1;
         }
         if (randomSprite == 1)
-          drawSprite(startX + wasteCoords, startY, 1, PlasticBottle);
+          drawSprite(startX + wasteCoords, startY, 1, Sprites::PlasticBottle);
         else
-          drawSprite(startX + wasteCoords, startY, 1, PlasticBottleAlt);
+          drawSprite(startX + wasteCoords, startY, 1, Sprites::PlasticBottleAlt);
         return 15;
       }
 
       if (spriteName == "TrashBag") {
-        drawSprite(startX + wasteCoords, startY, 1, TrashBag);
+        drawSprite(startX + wasteCoords, startY, 1, Sprites::TrashBag);
         return 50;
       }
 
       if (spriteName == "RustedBlockOfIron") {
-        drawSprite(startX + wasteCoords, startY, 1, RustedBlockOfIron);
+        drawSprite(startX + wasteCoords, startY, 1, Sprites::RustedBlockOfIron);
         return 10;
       }
     }
@@ -136,10 +141,44 @@ static void erase_element_at_pos(std::vector<Sprite>& vec, size_t position) {
   vec = answer;
 }
 
-void washedUp(HWND& window) {
+bool isInBetween(int start, int end, int val) {
+  int tempEnd;
+  if (start > end) {
+    tempEnd = end;
+    end = start;
+    start = tempEnd;
+  }
+
+  return start <= val && val <= end;
+}
+
+bool isInContact(int a, int b, int c, int d, int wasteCoordinatesX,
+                 Sprite spr) {
+  spr.startX += wasteCoordinatesX; /*This is done
+                                   because the beach is 
+                                   moving and we have to
+                                   keep track of waste coordinates
+                                   accordingly.*/
+
+  auto cond1 =
+      (isInBetween(a, c, spr.startX) &&
+       isInBetween(b, d, spr.startY));
+  auto cond2 = (isInBetween(spr.startX, spr.endX, a) &&
+                isInBetween(spr.startY, spr.endY, b));
+
+  auto condition = cond1 || cond2;
+
+  if (condition) {
+    spr.startX = spr.startX;
+  }
+
+  return condition;
+}
+
+void washedUp(HWND &window) {
 
   HDC hdc = GetDC(window);
-  
+
   size = buffer_height / 6;
 
   int trashPerRound = 5;
@@ -178,8 +217,8 @@ void washedUp(HWND& window) {
       DispatchMessage(&message);
     }
     }
-    //Check whether all trash has been picked up, if so
-    //spawn more.
+    // Check whether all trash has been picked up, if so
+    // spawn more.
     if (sprites.empty()) {
       for (auto i = 0; i < trashPerRound; i++) {
         Sprite spr;
@@ -191,23 +230,27 @@ void washedUp(HWND& window) {
       beachCoordinates = speed;
     if (beachCoordinates >= 92)
       beachCoordinates = -700;
-    //This drawSprite function draws the background (beach).
+    // This drawSprite function draws the background (beach).
     drawSprite(beachCoordinates - speed,
                buffer_height - (100 * (buffer_width) / 200) -
                    (55 * (buffer_width - 38) / 1098),
-               (buffer_width) / 200, Beach);
+               (buffer_width) / 200, Sprites::getBeach());
 
     if (!sprites.empty()) {
       for (auto i = 1; i <= sprites.size() * 2; i += 2)
         draw_rect(buffer_width / 20 * 19, buffer_height / 4 + i * 20,
-                  buffer_width / 20 * 19 + 20,
-                  buffer_height / 4 + 20 + i * 20, 0x0000ff);
+                  buffer_width / 20 * 19 + 20, buffer_height / 4 + 20 + i * 20,
+                  0x0000ff);
     }
 
-    if (pressed(BUTTON_LEFT)) playerX -= speed;
-    if (pressed(BUTTON_RIGHT)) playerX += speed;
-    if (pressed(BUTTON_DOWN)) playerY -= speed;
-    if (pressed(BUTTON_UP)) playerY += speed;
+    if (pressed(BUTTON_LEFT))
+      playerX -= speed;
+    if (pressed(BUTTON_RIGHT))
+      playerX += speed;
+    if (pressed(BUTTON_DOWN))
+      playerY -= speed;
+    if (pressed(BUTTON_UP))
+      playerY += speed;
 
     if (playerY < 0)
       playerY = 0;
@@ -240,7 +283,8 @@ void washedUp(HWND& window) {
         sprites[i].setName("RustedBlockOfIron");
         break;
       }
-      sprites[i].setStartX(randomNumber(playerX - buffer_width / 4, playerX + buffer_width));
+      sprites[i].setStartX(
+          randomNumber(playerX - buffer_width / 4, playerX + buffer_width));
       sprites[i].setStartY(randomNumber(0, buffer_height / 5 * 3));
       sprites[i].wasteCoords = wasteCoordinatesX;
       auto pointsForPickup = sprites[i].draw();
@@ -253,9 +297,13 @@ void washedUp(HWND& window) {
       draw_text(hdc, "WY is " + str(sprites[i].startY), 100,
                 150 * (i+1), 3, 0, 0xffffff); */
 
-      /* The <= 50 is a convience feature. It makes it so that 
-         the item would still collect if you were +- 50 pixels away from its hitbox */
-      if (abs((playerX + buffer_width / 4) - (sprites[i].startX + wasteCoordinatesX) <= 50) && abs(playerY - sprites[i].startY) <= 25) {
+      /* The <= 50 is a convience feature. It makes it so that
+         the item would still collect if you were +- 50 pixels away from its
+         hitbox */
+      if (abs((playerX + buffer_width / 4) -
+                  (sprites[i].startX + wasteCoordinatesX) <=
+              50) &&
+          abs(playerY - sprites[i].startY) <= 25) {
         if (pressed(BUTTON_ENTER)) {
           score += pointsForPickup;
           erase_element_at_pos(sprites, i);
@@ -264,9 +312,8 @@ void washedUp(HWND& window) {
       }
     }
 
-    draw_text(hdc, str(score), buffer_width / 10 * 9,
-              (buffer_height / 10 * 9), buffer_width / 300, 0,
-              0xffffff);
+    draw_text(hdc, str(score), buffer_width / 10 * 9, (buffer_height / 10 * 9),
+              buffer_width / 300, 0, 0xffffff);
 
     StretchDIBits(hdc, 0, 0, buffer_width, buffer_height, 0, 0, buffer_width,
                   buffer_height, buffer_memory, &buffer_bitmap_info,
