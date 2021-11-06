@@ -7,11 +7,11 @@
 namespace Sprites {
  std::vector<std::vector<unsigned int>> &getBeach();
 inline 
-#include "Sprites/PlasticBottle.hpp"
+#include "Sprites/PlasticBottle.hexImage"
 inline 
-#include "Sprites/PlasticBottleAlt.hpp"
+#include "Sprites/PlasticBottleAlt.hexImage"
 inline 
-#include "Sprites/RustedBlockOfIron.hpp"
+#include "Sprites/RustedBlockOfIron.hexImage"
 inline 
-#include "Sprites/TrashBag.hpp"
+#include "Sprites/TrashBag.hexImage"
 }; // namespace Sprites
