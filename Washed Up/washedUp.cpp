@@ -191,7 +191,7 @@ void washedUp(HWND& window) {
   
   size = buffer_height / 6;
 
-  int trashPerRound = 1;
+  int trashPerRound = 5;
   std::vector<Sprite> sprites(trashPerRound);
 
   int score = 0;
