@@ -3,15 +3,15 @@
 #include <windows.h>
 #include <string>
 #include <random>
+#include <shlobj.h>
+#include <sstream>
+#include <filesystem>
+#include <fstream>
 
 namespace Sprites {
- std::vector<std::vector<unsigned int>> &getBeach();
-inline 
-#include "Sprites/PlasticBottle.hexImage"
-inline 
-#include "Sprites/PlasticBottleAlt.hexImage"
-inline 
-#include "Sprites/RustedBlockOfIron.hexImage"
-inline 
-#include "Sprites/TrashBag.hexImage"
+std::vector<std::vector<unsigned int>> &getBeach();
+std::vector<std::vector<unsigned int>> &getPlasticBottle();
+std::vector<std::vector<unsigned int>> &getPlasticBottleAlt();
+std::vector<std::vector<unsigned int>> &getRustedBlockOfIron();
+std::vector<std::vector<unsigned int>> &getTrashBag();
 }; // namespace Sprites

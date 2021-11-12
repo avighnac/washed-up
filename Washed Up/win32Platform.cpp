@@ -55,11 +55,39 @@ inline std::string charToStr(char charac) {
   return str;
 }
 
+enum {
+  BUTTON_UP,
+  BUTTON_DOWN,
+  BUTTON_W,
+  BUTTON_S,
+  BUTTON_LEFT,
+  BUTTON_RIGHT,
+  BUTTON_ENTER,
+  BUTTON_CONTROL,
+
+  BUTTON_COUNT,
+};
+
+typedef std::basic_string<TCHAR, std::char_traits<TCHAR>> tstring;
+
 #include "renderer.cpp"
+#include "menus.hpp"
 #include "washedUp.cpp"
+#include "scoreboard.hpp"
 
 int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
             int nShowCmd) {
+  TCHAR appdataTCHAR[MAX_PATH] = {0};
+  SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, 0, appdataTCHAR);
+
+  tstring appdata = tstring(appdataTCHAR);
+
+  if (!std::filesystem::is_directory(appdata + tstring(L"\\Washed Up"))) {
+    std::filesystem::create_directory(appdata + tstring(L"\\Washed Up"));
+    std::ofstream scoreboard(appdata + tstring(L"\\Washed Up\\scoreboard.dat"));
+    scoreboard.close();
+  }
+
   const wchar_t class_name[] = L"Washed Up";
   WNDCLASS window_class = {};
   window_class.style = CS_HREDRAW | CS_VREDRAW;
@@ -75,5 +103,10 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
   ShowWindow(window, nShowCmd);
   HDC hdc = GetDC(window);
 
-  washedUp(window);
+  bool option = mainMenu(window);
+
+  if (option)
+    washedUp(window, appdata);
+  else
+    scoreboard(window, appdata);
 }

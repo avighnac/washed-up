@@ -22,21 +22,8 @@ struct Button_State {
   bool changed;
 };
 
-enum {
-  BUTTON_UP,
-  BUTTON_DOWN,
-  BUTTON_W,
-  BUTTON_S,
-  BUTTON_LEFT,
-  BUTTON_RIGHT,
-  BUTTON_ENTER,
-  BUTTON_CONTROL,
-
-  BUTTON_COUNT,
-};
-
 struct Input {
-  Button_State buttons[BUTTON_COUNT];
+  Menu_Button_State buttons[BUTTON_COUNT];
 };
 
 Input input = {};
@@ -44,11 +31,12 @@ Input input = {};
 int playerX = 0;
 int playerY = 0;
 int size = buffer_height / 6;
-float speed = 5;
+float origSpeed = 1;
+float speed = origSpeed;
+
+float acceleration = 0.02;
 
 int beachCoordinates = 0, wasteCoordinatesX = 0;
-
-bool boostedSpeed = false;
 
 int randomNumber(int start, int end) {
   std::random_device rd;
@@ -86,16 +74,16 @@ public:
       isSetName = true;
 
       if (name == "PlasticBottle") {
-        endX = Sprites::PlasticBottle[0].size() + startX;
-        endY = Sprites::PlasticBottle.size() + startY;
+        endX = Sprites::getPlasticBottle()[0].size() + startX;
+        endY = Sprites::getPlasticBottle().size() + startY;
       }
       if (name == "TrashBag") {
-        endX = Sprites::TrashBag[0].size() + startX;
-        endY = Sprites::TrashBag.size() + startY;
+        endX = Sprites::getTrashBag()[0].size() + startX;
+        endY = Sprites::getTrashBag().size() + startY;
       }
       if (name == "RustedBlockOfIron") {
-        endX = Sprites::RustedBlockOfIron[0].size() + startX;
-        endY = Sprites::RustedBlockOfIron.size() + startY;
+        endX = Sprites::getRustedBlockOfIron()[0].size() + startX;
+        endY = Sprites::getRustedBlockOfIron().size() + startY;
       }
     }
   }
@@ -113,19 +101,19 @@ public:
           spriteType = 1;
         }
         if (randomSprite == 1)
-          drawSprite(startX + wasteCoords, startY, 1, Sprites::PlasticBottle);
+          drawSprite(startX + wasteCoords, startY, 1, Sprites::getPlasticBottle());
         else
-          drawSprite(startX + wasteCoords, startY, 1, Sprites::PlasticBottleAlt);
+          drawSprite(startX + wasteCoords, startY, 1, Sprites::getPlasticBottleAlt());
         return 15;
       }
 
       if (spriteName == "TrashBag") {
-        drawSprite(startX + wasteCoords, startY, 1, Sprites::TrashBag);
+        drawSprite(startX + wasteCoords, startY, 1, Sprites::getTrashBag());
         return 50;
       }
 
       if (spriteName == "RustedBlockOfIron") {
-        drawSprite(startX + wasteCoords, startY, 1, Sprites::RustedBlockOfIron);
+        drawSprite(startX + wasteCoords, startY, 1, Sprites::getRustedBlockOfIron());
         return 10;
       }
     }
@@ -150,12 +138,6 @@ bool isInContact1D(int start, int end, int val) {
   }
 
   return start <= val && val <= end;
-}
-
-void swap(int& a, int& b) {
-  int temp = a;
-  a = b;
-  b = temp;
 }
 
 bool isInContact2D(int startX, int startY, int endX, int endY, int objStartX, int objStartY, int objEndX,
@@ -185,7 +167,7 @@ bool isInContact2D(int startX, int startY, int endX, int endY, int objStartX, in
   return false;
 }
 
-void washedUp(HWND& window) {
+void washedUp(HWND& window, tstring appdata) {
 
   HDC hdc = GetDC(window);
   
@@ -253,10 +235,18 @@ void washedUp(HWND& window) {
                   buffer_height / 4 + 20 + i * 20, 0x0000ff);
     }
 
-    if (pressed(BUTTON_LEFT)) playerX -= speed;
-    if (pressed(BUTTON_RIGHT)) playerX += speed;
-    if (pressed(BUTTON_DOWN)) playerY -= speed;
-    if (pressed(BUTTON_UP)) playerY += speed;
+    if (pressed(BUTTON_LEFT)) playerX -= (speed += acceleration);
+    if (pressed(BUTTON_RIGHT)) playerX += (speed += acceleration);
+    if (pressed(BUTTON_DOWN)) playerY -= (speed += acceleration);
+    if (pressed(BUTTON_UP)) playerY += (speed += acceleration);
+
+    if (!pressed(BUTTON_LEFT) && !pressed(BUTTON_RIGHT) &&
+        !pressed(BUTTON_UP) && !pressed(BUTTON_DOWN))
+      speed = origSpeed;
+    if (pressed(BUTTON_LEFT) && input.buttons[BUTTON_RIGHT].changed)
+      speed = 0;
+    if (pressed(BUTTON_DOWN) && input.buttons[BUTTON_UP].changed)
+      speed = 0;
 
     if (playerY < 0)
       playerY = 0;
@@ -350,6 +340,7 @@ void washedUp(HWND& window) {
                 playerX + buffer_width / 4 + size, playerY + size,
                 sprites[i].startX + wasteCoordinatesX, sprites[i].startY,
                 sprites[i].endX + wasteCoordinatesX, sprites[i].endY)) {
+
           score += pointsForPickup;
           erase_element_at_pos(sprites, i);
           i--;
@@ -365,4 +356,9 @@ void washedUp(HWND& window) {
                   buffer_height, buffer_memory, &buffer_bitmap_info,
                   DIB_RGB_COLORS, SRCCOPY);
   }
+
+  std::fstream scoreboardDat;
+  scoreboardDat.open((appdata + tstring(L"\\Washed Up\\scoreboard.dat")), std::ios_base::app | std::ios_base::in);
+  scoreboardDat << score << " ";
+  scoreboardDat.close();
 }

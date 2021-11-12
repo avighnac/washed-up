@@ -16,6 +16,9 @@
     <Filter Include="Precompiled Header Config">
       <UniqueIdentifier>{97f8ebc9-09e6-4892-befc-fcdbf181e20a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Menus">
+      <UniqueIdentifier>{b9f0a025-3a42-4d24-a750-031ab515c299}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="win32Platform.cpp">
@@ -47,6 +50,12 @@
   <ItemGroup>
     <ClInclude Include="pch.hpp">
       <Filter>Precompiled Header Config</Filter>
+    </ClInclude>
+    <ClInclude Include="menus.hpp">
+      <Filter>Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="scoreboard.hpp">
+      <Filter>Menus</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
