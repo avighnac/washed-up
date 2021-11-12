@@ -209,6 +209,11 @@ void washedUp(HWND& window, tstring appdata) {
       DispatchMessage(&message);
     }
     }
+    //Limit the speed to not let player accelerate to crazy speeds.
+    if (speed > 10) {
+      speed = 10;
+    }
+
     //Check whether all trash has been picked up, if so
     //spawn more.
     if (sprites.empty()) {
@@ -285,55 +290,6 @@ void washedUp(HWND& window, tstring appdata) {
       sprites[i].wasteCoords = wasteCoordinatesX;
       auto pointsForPickup = sprites[i].draw();
 
-      /*
-
-      draw_text(hdc, "startX is " + str(playerX + buffer_width / 4), 100, 100, 3, 0,
-                0xffffff);
-      draw_text(hdc, "startY is " + str(playerY), 400, 100, 3, 0, 0xffffff);
-      draw_text(hdc, "endX is " + str(playerX + buffer_width / 4 + size), 100, 80,
-                3, 0, 0xffffff);
-      draw_text(hdc, "endY is " + str(playerY + size), 400, 80, 3, 0, 0xffffff);
-      draw_text(hdc, "objStartX is " + str(sprites[i].startX + wasteCoordinatesX), 100,
-                140 * (i + 1), 3, 0, 0xffffff);
-      draw_text(hdc, "objStartY is " + str(sprites[i].startY), 400, 140 * (i + 1), 3,
-                0, 0xffffff);
-      draw_text(hdc,
-                "objEndX is " + str(sprites[i].endX + wasteCoordinatesX),
-                100, 120 * (i + 1), 3, 0, 0xffffff);
-      draw_text(hdc, "objEndY is " + str(sprites[i].endY), 400,
-                120 * (i + 1), 3, 0, 0xffffff);
-
-      // DBG hitbox of sprite
-      draw_rect(sprites[i].startX + wasteCoordinatesX, sprites[i].endY,
-                sprites[i].startX + wasteCoordinatesX + 10,
-                sprites[i].endY + 10, 0x00ff00);
-      draw_rect(sprites[i].endX + wasteCoordinatesX, sprites[i].endY,
-                sprites[i].endX + wasteCoordinatesX + 10, sprites[i].endY + 10,
-                0x00ff00);
-      draw_rect(sprites[i].endX + wasteCoordinatesX, sprites[i].startY,
-                sprites[i].endX + wasteCoordinatesX + 10,
-                sprites[i].startY + 10, 0x00ff00);
-      draw_rect(sprites[i].startX + wasteCoordinatesX, sprites[i].startY,
-                sprites[i].startX + wasteCoordinatesX + 10,
-                sprites[i].startY + 10, 0x00ff00);
-      // DBGover
-
-      // DBG hitbox of player
-      draw_rect(playerX + buffer_width / 4, playerY + size,
-                playerX + buffer_width / 4 + 10, playerY + size + 10,
-                0x000000); // Top Left
-      draw_rect(playerX + buffer_width / 4 + size, playerY + size,
-                playerX + buffer_width / 4 + 10 + size, playerY + size + 10,
-                0x000000); // Top Right
-      draw_rect(playerX + buffer_width / 4, playerY,
-                playerX + buffer_width / 4 + 10, playerY + 10,
-                0x000000); // Bottom Left
-      draw_rect(playerX + buffer_width / 4 + size, playerY,
-                playerX + buffer_width / 4 + 10 + size, playerY + 10,
-                0x000000); // Bottom Right
-      // DBGOver
-      */
-
       if (pressed(BUTTON_ENTER)) {
         if (isInContact2D(
                 playerX + buffer_width / 4, playerY,
@@ -357,8 +313,11 @@ void washedUp(HWND& window, tstring appdata) {
                   DIB_RGB_COLORS, SRCCOPY);
   }
 
-  std::fstream scoreboardDat;
-  scoreboardDat.open((appdata + tstring(L"\\Washed Up\\scoreboard.dat")), std::ios_base::app | std::ios_base::in);
-  scoreboardDat << score << " ";
-  scoreboardDat.close();
+  if (score > 0) {
+    std::fstream scoreboardDat;
+    scoreboardDat.open((appdata + tstring(L"\\Washed Up\\scoreboard.dat")),
+                       std::ios_base::app | std::ios_base::in);
+    scoreboardDat << score << " ";
+    scoreboardDat.close();
+  }
 }
