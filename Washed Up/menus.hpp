@@ -11,7 +11,7 @@ struct Menu_Input {
 
 Menu_Input menuInput = {};
 
-bool mainMenuOption = 0;
+bool mainMenuOption = 1;
 bool prevMouseState = 0;
 
 inline bool isInBetween(int start, int end, int num) {

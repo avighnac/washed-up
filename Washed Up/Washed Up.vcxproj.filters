@@ -19,6 +19,15 @@
     <Filter Include="Menus">
       <UniqueIdentifier>{b9f0a025-3a42-4d24-a750-031ab515c299}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Washed Up">
+      <UniqueIdentifier>{48ac6e8d-af0e-4cd0-b37e-e60b7e7c8ff9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Washed Up\Collision System">
+      <UniqueIdentifier>{fc7f31c9-0195-44b1-b184-433501f28cd7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Washed Up\Sprites">
+      <UniqueIdentifier>{61062b84-dd2b-481f-87e0-d97f1058b786}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="win32Platform.cpp">
@@ -27,11 +36,11 @@
     <ClCompile Include="renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="washedUp.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>Precompiled Header Config</Filter>
+    </ClCompile>
+    <ClCompile Include="washedUp.cpp">
+      <Filter>Washed Up</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -56,6 +65,15 @@
     </ClInclude>
     <ClInclude Include="scoreboard.hpp">
       <Filter>Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="isInContact.hpp">
+      <Filter>Washed Up\Collision System</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.hpp">
+      <Filter>Washed Up\Sprites</Filter>
+    </ClInclude>
+    <ClInclude Include="randomNumber.hpp">
+      <Filter>Washed Up</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

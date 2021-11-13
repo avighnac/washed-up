@@ -1,21 +1,11 @@
+#include "isInContact.hpp"
+#include "Sprite.hpp"
+#include "randomNumber.hpp"
+
 #define pressed(b) (input.buttons[b].is_down)
 #define draw_player(x, y) (draw_rect(x, y, x+size, y+size, 0xffffff))
 
 #define str(x) std::to_string(x)
-
-void drawSprite(int startX, int startY, int size,
-                std::vector<std::vector<unsigned int>> &spriteVec) {
-  for (auto y = 0; y < spriteVec.size(); y++) {
-    for (auto x = 0; x < spriteVec[y].size(); x++) {
-      if (spriteVec[spriteVec.size() - y - 1][spriteVec[y].size() - x - 1] !=
-          0xffffff)
-        draw_rect(
-            startX + x * size, startY + y * size, startX + (x + 1) * size,
-            startY + (y + 1) * size,
-            spriteVec[spriteVec.size() - y - 1][spriteVec[y].size() - x - 1]);
-    }
-  }
-}
 
 struct Button_State {
   bool is_down;
@@ -31,94 +21,11 @@ Input input = {};
 int playerX = 0;
 int playerY = 0;
 int size = buffer_height / 6;
-float origSpeed = 1;
-float speed = origSpeed;
+float origSpeed = 1, speed = origSpeed;
 
 float acceleration = 0.02;
 
 int beachCoordinates = 0, wasteCoordinatesX = 0;
-
-int randomNumber(int start, int end) {
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  std::uniform_int_distribution<> distr(start, end);
-  return distr(gen);
-}
-
-class Sprite {
-private:
-
-public:
-  std::string spriteName;
-  int startX, startY, endX, endY, wasteCoords;
-  bool isSetX = 0, isSetY = 0, isSetName = 0;
-  bool deleted = false;
-
-  void setStartX(int startx) {
-    if (!isSetX) {
-      startX = startx;
-      isSetX = true;
-    }
-  }
-
-  void setStartY(int starty) {
-    if (!isSetY) {
-      startY = starty;
-      isSetY = true;
-    }
-  }
-
-  void setName(std::string name) {
-    if (!isSetName) {
-      spriteName = name;
-      isSetName = true;
-
-      if (name == "PlasticBottle") {
-        endX = Sprites::getPlasticBottle()[0].size() + startX;
-        endY = Sprites::getPlasticBottle().size() + startY;
-      }
-      if (name == "TrashBag") {
-        endX = Sprites::getTrashBag()[0].size() + startX;
-        endY = Sprites::getTrashBag().size() + startY;
-      }
-      if (name == "RustedBlockOfIron") {
-        endX = Sprites::getRustedBlockOfIron()[0].size() + startX;
-        endY = Sprites::getRustedBlockOfIron().size() + startY;
-      }
-    }
-  }
-
-  void deleteSprite () { deleted = true; }
-
-  bool spriteType = false;
-  int randomSprite;
-
-  int draw() {
-    if (!deleted) {
-      if (spriteName == "PlasticBottle") {
-        if (!spriteType) {
-          randomSprite = randomNumber(0, 1);
-          spriteType = 1;
-        }
-        if (randomSprite == 1)
-          drawSprite(startX + wasteCoords, startY, 1, Sprites::getPlasticBottle());
-        else
-          drawSprite(startX + wasteCoords, startY, 1, Sprites::getPlasticBottleAlt());
-        return 15;
-      }
-
-      if (spriteName == "TrashBag") {
-        drawSprite(startX + wasteCoords, startY, 1, Sprites::getTrashBag());
-        return 50;
-      }
-
-      if (spriteName == "RustedBlockOfIron") {
-        drawSprite(startX + wasteCoords, startY, 1, Sprites::getRustedBlockOfIron());
-        return 10;
-      }
-    }
-  }
-};
 
 static void erase_element_at_pos(std::vector<Sprite>& vec, size_t position) {
   std::vector<Sprite> answer;
@@ -127,44 +34,6 @@ static void erase_element_at_pos(std::vector<Sprite>& vec, size_t position) {
       answer.push_back(vec[i]);
   }
   vec = answer;
-}
-
-bool isInContact1D(int start, int end, int val) {
-  int tempEnd;
-  if (start > end) {
-    tempEnd = end;
-    end = start;
-    start = tempEnd;
-  }
-
-  return start <= val && val <= end;
-}
-
-bool isInContact2D(int startX, int startY, int endX, int endY, int objStartX, int objStartY, int objEndX,
-                   int objEndY) {
-
-  if (startX > objStartX && startX < objEndX && startY > objStartY &&
-      startY < objEndY)
-    return true;
-  if (endX > objStartX && endX < objEndX && endY > objStartY &&
-      endY < objEndY)
-    return true;
-  if (startX > objStartX && startX < objEndX && endY > objStartY &&
-      endY < objEndY)
-    return true;
-  if (endX > objStartX && endX < objEndX && startY > objStartY &&
-      startY < objEndY)
-    return true;
-  if (startX < objStartX && objStartX < objEndX && objEndX < endX)
-    return true;
-
-  if (isInContact1D(startX, endX, objStartX) &&
-          isInContact1D(startY, endY, objStartY) ||
-      isInContact1D(startX, endX, objEndX) &&
-          isInContact1D(startY, endY, objEndY))
-    return true;
-
-  return false;
 }
 
 void washedUp(HWND& window, tstring appdata) {
@@ -313,7 +182,7 @@ void washedUp(HWND& window, tstring appdata) {
                   DIB_RGB_COLORS, SRCCOPY);
   }
 
-  if (score > 0) {
+  if (score > 0) { // If score > 0, ie. if the player collected >1 piece of trash.
     std::fstream scoreboardDat;
     scoreboardDat.open((appdata + tstring(L"\\Washed Up\\scoreboard.dat")),
                        std::ios_base::app | std::ios_base::in);
