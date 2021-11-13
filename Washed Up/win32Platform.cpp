@@ -103,10 +103,12 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
   ShowWindow(window, nShowCmd);
   HDC hdc = GetDC(window);
 
-  bool option = mainMenu(window);
+  int option = mainMenu(window);
 
-  if (option)
+  if (option == 0)
     washedUp(window, appdata);
-  else
+  else if (option == 1)
     scoreboard(window, appdata);
+  else
+    running = false;
 }
