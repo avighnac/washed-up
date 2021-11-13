@@ -11,9 +11,6 @@ void scoreboard(HWND &window, tstring appdata) {
   }
 
   std::sort(scores.begin(), scores.end());
-  int scoresSize = scores.size();
-  if (scoresSize > 10)
-    scoresSize = 10;
 
   while (running) {
     MSG message;
@@ -52,8 +49,8 @@ void scoreboard(HWND &window, tstring appdata) {
               buffer_height - (buffer_height / 10), buffer_width / 150, 0,
               0x000000);
 
-    for (auto i = 0; i < scoresSize; i++) {
-      draw_text(hdc, std::to_string(i + 1) + ": " + std::to_string(scores[scoresSize - i - 1]),
+    for (auto i = 0; i < 10; i++) {
+      draw_text(hdc, std::to_string(i + 1) + ": " + std::to_string(scores[scores.size() - i - 1]),
                 buffer_width / 20,
                 buffer_height - (buffer_height / 5 + (buffer_height / 20 * (i + 1))),
                 buffer_width / 230, 0,
