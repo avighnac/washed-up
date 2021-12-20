@@ -7,6 +7,7 @@
 #include <sstream>
 #include <filesystem>
 #include <fstream>
+#include <chrono>
 
 namespace Sprites {
 std::vector<std::vector<unsigned int>> &getBeach();
