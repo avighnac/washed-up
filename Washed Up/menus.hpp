@@ -75,7 +75,7 @@ int mainMenu(HWND &window) {
             pos - buffer_width / 35, buffer_height / 2 - buffer_width / 35,
             pos + (4 * 6 * mainMenuOptions[i].length()) + buffer_width / 35,
             buffer_height / 2 + (5 * 4) + buffer_width / 35,
-            0x00ff00); // I really don't know why the * 6 is needed, it was
+            0x0ff0ff); // I really don't know why the * 6 is needed, it was
                        // trial and error TBH.
       else
         draw_rect(
