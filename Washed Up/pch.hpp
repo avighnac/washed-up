@@ -8,11 +8,3 @@
 #include <filesystem>
 #include <fstream>
 #include <chrono>
-
-namespace Sprites {
-std::vector<std::vector<unsigned int>> &getBeach();
-std::vector<std::vector<unsigned int>> &getPlasticBottle();
-std::vector<std::vector<unsigned int>> &getPlasticBottleAlt();
-std::vector<std::vector<unsigned int>> &getRustedBlockOfIron();
-std::vector<std::vector<unsigned int>> &getTrashBag();
-}; // namespace Sprites

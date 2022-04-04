@@ -1,6 +1,7 @@
 #pragma once
 
 #include "randomNumber.hpp"
+#include <washedUpSprites.hpp>
 
 void drawSprite(int startX, int startY, int size,
                 std::vector<std::vector<unsigned int>> &spriteVec) {
@@ -58,16 +59,16 @@ void Sprite::setName(std::string name) {
     isSetName = true;
 
     if (name == "PlasticBottle") {
-      endX = Sprites::getPlasticBottle()[0].size() + startX;
-      endY = Sprites::getPlasticBottle().size() + startY;
+      endX = sprites::getPlasticBottle()[0].size() + startX;
+      endY = sprites::getPlasticBottle().size() + startY;
     }
     if (name == "TrashBag") {
-      endX = Sprites::getTrashBag()[0].size() + startX;
-      endY = Sprites::getTrashBag().size() + startY;
+      endX = sprites::getTrashBag()[0].size() + startX;
+      endY = sprites::getTrashBag().size() + startY;
     }
     if (name == "RustedBlockOfIron") {
-      endX = Sprites::getRustedBlockOfIron()[0].size() + startX;
-      endY = Sprites::getRustedBlockOfIron().size() + startY;
+      endX = sprites::getRustedBlockOfIron()[0].size() + startX;
+      endY = sprites::getRustedBlockOfIron().size() + startY;
     }
   }
 }
@@ -81,21 +82,21 @@ int Sprite::draw() {
       }
       if (randomSprite == 1)
         drawSprite(startX + wasteCoords, startY, 1,
-                   Sprites::getPlasticBottle());
+                   sprites::getPlasticBottle());
       else
         drawSprite(startX + wasteCoords, startY, 1,
-                   Sprites::getPlasticBottleAlt());
+                   sprites::getPlasticBottleAlt());
       return 15;
     }
 
     if (spriteName == "TrashBag") {
-      drawSprite(startX + wasteCoords, startY, 1, Sprites::getTrashBag());
+      drawSprite(startX + wasteCoords, startY, 1, sprites::getTrashBag());
       return 50;
     }
 
     if (spriteName == "RustedBlockOfIron") {
       drawSprite(startX + wasteCoords, startY, 1,
-                 Sprites::getRustedBlockOfIron());
+                 sprites::getRustedBlockOfIron());
       return 10;
     }
   }

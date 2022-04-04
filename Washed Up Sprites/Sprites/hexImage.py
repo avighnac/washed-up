@@ -10,7 +10,7 @@ def rgbtohex(r, g, b):
 
 def main():
     if len(sys.argv) == 2:
-        f = open(sys.argv[1][:-4] + ".hpp", "w")
+        f = open(sys.argv[1][:-4] + ".hexImage", "w")
         f.write("#include <vector>\nstd::vector<std::vector<unsigned int>> " + sys.argv[1][:-4] + " = {")
 
         image_name = sys.argv[1]

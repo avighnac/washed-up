@@ -2,6 +2,8 @@
 #include "isInContact.hpp"
 #include "randomNumber.hpp"
 
+#include <washedUpSprites.hpp>
+
 #define pressed(b) (input.buttons[b].is_down)
 #define draw_player(x, y) (draw_rect(x, y, x + size, y + size, 0xffffff))
 
@@ -48,6 +50,8 @@ void washedUp(HWND &window, tstring appdata) {
   int score = 0;
 
   float deltaTime = 1 / 500.0;
+
+  bool playerOrientedRight = true;
 
   while (running) {
     auto start = std::chrono::high_resolution_clock::now();
@@ -104,7 +108,7 @@ void washedUp(HWND &window, tstring appdata) {
     drawSprite(beachCoordinates - speed,
                buffer_height - (100 * (buffer_width) / 200) -
                    (55 * (buffer_width - 38) / 1098),
-               (buffer_width) / 200, Sprites::getBeach());
+               (buffer_width) / 200, sprites::getBeach());
 
     if (!sprites.empty()) {
       for (auto i = 1; i <= sprites.size() * 2; i += 2)
@@ -155,7 +159,17 @@ void washedUp(HWND &window, tstring appdata) {
       wasteCoordinatesX -= moveAmount;
     }
 
-    draw_player(playerX + buffer_width / 4, playerY);
+    if (pressed(BUTTON_RIGHT))
+      playerOrientedRight = true;
+    else if (pressed(BUTTON_LEFT))
+      playerOrientedRight = false;
+
+    if (!playerOrientedRight) drawSprite(playerX + buffer_width / 4, playerY, 1,
+               sprites::getStickman_Left());
+    else
+      drawSprite(playerX + buffer_width / 4, playerY, 1,
+                 sprites::getStickman_Right());
+    //draw_player(playerX + buffer_width / 4, playerY);
 
     for (auto i = 0; i < sprites.size(); i++) {
       sprites[i].setStartX(

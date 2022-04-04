@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31825.309
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Washed Up", "Washed Up\Washed Up.vcxproj", "{4A35AC2D-5644-4EB5-BF62-4395E5480AE8}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Washed Up Sprites", "Washed Up Sprites\Washed Up Sprites.vcxproj", "{26FFDD89-CE6A-4B55-A944-976B5D7E92E3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,14 @@ Global
 		{4A35AC2D-5644-4EB5-BF62-4395E5480AE8}.Release|x64.Build.0 = Release|x64
 		{4A35AC2D-5644-4EB5-BF62-4395E5480AE8}.Release|x86.ActiveCfg = Release|Win32
 		{4A35AC2D-5644-4EB5-BF62-4395E5480AE8}.Release|x86.Build.0 = Release|Win32
+		{26FFDD89-CE6A-4B55-A944-976B5D7E92E3}.Debug|x64.ActiveCfg = Debug|x64
+		{26FFDD89-CE6A-4B55-A944-976B5D7E92E3}.Debug|x64.Build.0 = Debug|x64
+		{26FFDD89-CE6A-4B55-A944-976B5D7E92E3}.Debug|x86.ActiveCfg = Debug|Win32
+		{26FFDD89-CE6A-4B55-A944-976B5D7E92E3}.Debug|x86.Build.0 = Debug|Win32
+		{26FFDD89-CE6A-4B55-A944-976B5D7E92E3}.Release|x64.ActiveCfg = Release|x64
+		{26FFDD89-CE6A-4B55-A944-976B5D7E92E3}.Release|x64.Build.0 = Release|x64
+		{26FFDD89-CE6A-4B55-A944-976B5D7E92E3}.Release|x86.ActiveCfg = Release|Win32
+		{26FFDD89-CE6A-4B55-A944-976B5D7E92E3}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

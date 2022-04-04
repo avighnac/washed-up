@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Sprites">
+      <UniqueIdentifier>{ddd0f3c2-ff2a-4b8c-aa08-6aaa9ff64aa0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Sprites\Beach.hexImage">
+      <Filter>Sprites</Filter>
+    </None>
+    <None Include="Sprites\PlasticBottle.hexImage">
+      <Filter>Sprites</Filter>
+    </None>
+    <None Include="Sprites\PlasticBottleAlt.hexImage">
+      <Filter>Sprites</Filter>
+    </None>
+    <None Include="Sprites\RustedBlockOfIron.hexImage">
+      <Filter>Sprites</Filter>
+    </None>
+    <None Include="Sprites\Stickman_Left.hexImage">
+      <Filter>Sprites</Filter>
+    </None>
+    <None Include="Sprites\Stickman_Right.hexImage">
+      <Filter>Sprites</Filter>
+    </None>
+    <None Include="Sprites\TrashBag.hexImage">
+      <Filter>Sprites</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="washedUpSprites.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="washedUpSprites.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
