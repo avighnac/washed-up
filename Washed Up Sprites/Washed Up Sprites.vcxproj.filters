@@ -31,6 +31,9 @@
     <None Include="Sprites\TrashBag.hexImage">
       <Filter>Sprites</Filter>
     </None>
+    <None Include="Sprites\hexImage.py">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="washedUpSprites.hpp">

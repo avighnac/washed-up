@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="Sprites\Beach.hexImage" />
+    <None Include="Sprites\hexImage.py" />
     <None Include="Sprites\PlasticBottle.hexImage" />
     <None Include="Sprites\PlasticBottleAlt.hexImage" />
     <None Include="Sprites\RustedBlockOfIron.hexImage" />
