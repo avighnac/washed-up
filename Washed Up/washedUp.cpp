@@ -52,6 +52,9 @@ void washedUp(HWND &window, tstring appdata) {
   float deltaTime = 1 / 500.0;
 
   bool playerOrientedRight = true;
+  bool playerSprite = true;
+
+  int trackPlayerX = playerX, playerXFake = playerX;
 
   while (running) {
     auto start = std::chrono::high_resolution_clock::now();
@@ -91,6 +94,11 @@ void washedUp(HWND &window, tstring appdata) {
       speed = 10;
     }
 
+    if (abs(trackPlayerX - playerXFake) > 200) {
+      playerSprite = !playerSprite;
+      trackPlayerX = playerXFake;
+    }
+
     // Check whether all trash has been picked up, if so
     // spawn more.
     if (sprites.empty()) {
@@ -123,10 +131,14 @@ void washedUp(HWND &window, tstring appdata) {
     auto currentAcceleration = acceleration * frameSpeed;
     auto currentSpeed = speed * frameSpeed;
 
-    if (pressed(BUTTON_LEFT))
+    if (pressed(BUTTON_LEFT)) {
       playerX -= (speed += currentAcceleration) * frameSpeed;
-    if (pressed(BUTTON_RIGHT))
+      playerXFake -= (speed += currentAcceleration) * frameSpeed;
+    }
+    if (pressed(BUTTON_RIGHT)) {
       playerX += (speed += currentAcceleration) * frameSpeed;
+      playerXFake += (speed += currentAcceleration) * frameSpeed;
+    }
     if (pressed(BUTTON_DOWN))
       playerY -= (speed += currentAcceleration) * frameSpeed;
     if (pressed(BUTTON_UP))
@@ -164,13 +176,6 @@ void washedUp(HWND &window, tstring appdata) {
     else if (pressed(BUTTON_LEFT))
       playerOrientedRight = false;
 
-    if (!playerOrientedRight) drawSprite(playerX + buffer_width / 4, playerY, 1,
-               sprites::getStickman_Left());
-    else
-      drawSprite(playerX + buffer_width / 4, playerY, 1,
-                 sprites::getStickman_Right());
-    //draw_player(playerX + buffer_width / 4, playerY);
-
     for (auto i = 0; i < sprites.size(); i++) {
       sprites[i].setStartX(
           randomNumber(playerX - buffer_width / 4, playerX + buffer_width));
@@ -202,6 +207,22 @@ void washedUp(HWND &window, tstring appdata) {
           i--;
         }
       }
+    }
+
+    if (!playerOrientedRight) {
+      if (playerSprite)
+        drawSprite(playerX + buffer_width / 4, playerY, 1,
+                   sprites::getStickman_Left());
+      else
+        drawSprite(playerX + buffer_width / 4, playerY, 1,
+                   sprites::getStickman_LeftAlt());
+    } else {
+      if (playerSprite)
+        drawSprite(playerX + buffer_width / 4, playerY, 1,
+                   sprites::getStickman_Right());
+      else
+        drawSprite(playerX + buffer_width / 4, playerY, 1,
+                   sprites::getStickman_RightAlt());
     }
 
     draw_text(hdc, str(score), buffer_width / 10 * 9, (buffer_height / 10 * 9),

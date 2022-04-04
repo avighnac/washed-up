@@ -34,6 +34,12 @@
     <None Include="Sprites\hexImage.py">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="Sprites\Stickman_LeftAlt.hexImage">
+      <Filter>Sprites</Filter>
+    </None>
+    <None Include="Sprites\Stickman_RightAlt.hexImage">
+      <Filter>Sprites</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="washedUpSprites.hpp">

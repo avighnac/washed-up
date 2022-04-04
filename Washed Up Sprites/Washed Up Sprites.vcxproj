@@ -145,7 +145,9 @@
     <None Include="Sprites\PlasticBottleAlt.hexImage" />
     <None Include="Sprites\RustedBlockOfIron.hexImage" />
     <None Include="Sprites\Stickman_Left.hexImage" />
+    <None Include="Sprites\Stickman_LeftAlt.hexImage" />
     <None Include="Sprites\Stickman_Right.hexImage" />
+    <None Include="Sprites\Stickman_RightAlt.hexImage" />
     <None Include="Sprites\TrashBag.hexImage" />
   </ItemGroup>
   <ItemGroup>
