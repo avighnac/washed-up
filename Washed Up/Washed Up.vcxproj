@@ -173,6 +173,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="isInContact.hpp" />
+    <ClInclude Include="items.hpp" />
     <ClInclude Include="menus.hpp" />
     <ClInclude Include="pch.hpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>

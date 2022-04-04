@@ -75,5 +75,8 @@
     <ClInclude Include="randomNumber.hpp">
       <Filter>Washed Up</Filter>
     </ClInclude>
+    <ClInclude Include="items.hpp">
+      <Filter>Menus</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

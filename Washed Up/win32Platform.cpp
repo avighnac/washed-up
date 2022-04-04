@@ -74,6 +74,7 @@ typedef std::basic_string<TCHAR, std::char_traits<TCHAR>> tstring;
 #include "menus.hpp"
 #include "washedUp.cpp"
 #include "scoreboard.hpp"
+#include "items.hpp"
 
 int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
             int nShowCmd) {
@@ -85,7 +86,14 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
   if (!std::filesystem::is_directory(appdata + tstring(L"\\Washed Up"))) {
     std::filesystem::create_directory(appdata + tstring(L"\\Washed Up"));
     std::ofstream scoreboard(appdata + tstring(L"\\Washed Up\\scoreboard.dat"));
+    std::filesystem::create_directory(appdata + tstring(L"\\Washed Up\\items"));
+    std::ofstream bottle(appdata + tstring(L"\\Washed Up\\items\\bottle.dat"));
+    std::ofstream trash_bag(appdata + tstring(L"\\Washed Up\\items\\trash_bag.dat"));
+    std::ofstream iron(appdata + tstring(L"\\Washed Up\\items\\iron.dat"));
     scoreboard.close();
+    bottle.close();
+    trash_bag.close();
+    iron.close();
   }
 
   const wchar_t class_name[] = L"Washed Up";
@@ -109,6 +117,6 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
     washedUp(window, appdata);
   else if (option == 1)
     scoreboard(window, appdata);
-  else
-    running = false;
+  else if (option == 2)
+    items(window, appdata);
 }

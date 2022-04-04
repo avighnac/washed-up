@@ -2,6 +2,8 @@
 
 #define rect(a, b, c, d, e) (draw_rect(a, b, a+(c), b+(d), e))
 
+#include "isInContact.hpp"
+
 struct Menu_Button_State {
   bool is_down;
   bool changed;
@@ -65,11 +67,6 @@ int mainMenu(HWND &window) {
     clear_screen(0xfffff0);
     HDC hdc = GetDC(window);
 
-    RECT rc;
-    GetClientRect(window, &rc);
-    ClientToScreen(window, reinterpret_cast<POINT *>(&rc.left));
-    ClientToScreen(window, reinterpret_cast<POINT *>(&rc.right));
-
     int pos = buffer_width / 6;
 
     for (auto i = 0; i < mainMenuOptions.size(); i++) {
@@ -94,25 +91,27 @@ int mainMenu(HWND &window) {
 
     pos = buffer_width / 6;
     
-    /*
-    if (GetKeyState(VK_LBUTTON) < 0 && !prevMouseState) { // This is the mouse clicking system.
-                                                          // It currently does not work so I will be commenting it out.
-      prevMouseState = false;
+    if (GetKeyState(VK_LBUTTON) < 0 &&
+        !prevMouseState) {
+      prevMouseState = true;
       POINT pt;
       GetCursorPos(&pt);
       mouse_event(MOUSEEVENTF_LEFTUP, pt.x, pt.y, 0, 0);
+      ScreenToClient(window, &pt);
+      pt.y = buffer_height - pt.y;
 
       for (auto i = 0; i < mainMenuOptions[i].size(); i++) {
-        if (isInBetween(pos - buffer_width / 35,
-                        pos + (4 * 6 * mainMenuOptions[i].length()) + buffer_width / 35,
-                        (pt.x - rc.left)) &&
-            isInBetween(buffer_height - (buffer_height / 2 - buffer_width / 35),
-                        buffer_height - (buffer_height / 2 + (5 * 4) + buffer_width / 35),
-                        (pt.y - rc.top)))
+        if (isInContact2D(pt.x, pt.y, pt.x, pt.y, pos - buffer_width / 35,
+                          buffer_height / 2 - buffer_width / 35,
+                          pos + (4 * 6 * mainMenuOptions[i].length()) +
+                              buffer_width / 35,
+                          buffer_height / 2 + (5 * 4) + buffer_width / 35))
           mainMenuOption = i;
+
+        pos += buffer_width / 5 * (i + 1);
       }
-    }
-    */
+    } else
+      prevMouseState = false;
 
     if (menuPressed(BUTTON_RIGHT)) {
       mainMenuOption++;
