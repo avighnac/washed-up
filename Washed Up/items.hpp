@@ -44,7 +44,9 @@ void items(HWND &window, tstring appdata) {
     }
     }
 
-    
+    clear_screen(0xffffff);
+    draw_text(hdc, "This feature has not been coded in yet! Come back later.",
+              45, 300, 3, 0, 0xff0ff0);
 
     StretchDIBits(hdc, 0, 0, buffer_width, buffer_height, 0, 0, buffer_width,
                   buffer_height, buffer_memory, &buffer_bitmap_info,
