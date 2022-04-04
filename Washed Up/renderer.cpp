@@ -63,6 +63,14 @@ std::vector<std::vector<bool>> character(char alphabetChar) {
             {0, 1, 1, 1, 0}};
     break;
   }
+  case 'f': {
+    return {{0, 0, 1, 1, 0},
+            {0, 0, 1, 0, 0},
+            {0, 1, 1, 1, 0}, 
+            {0, 0, 1, 0, 0},
+            {0, 0, 1, 0, 0}};
+    break;
+  }
   case 'g': {
     return {{0, 1, 1, 1, 0},
             {0, 1, 0, 1, 0},
