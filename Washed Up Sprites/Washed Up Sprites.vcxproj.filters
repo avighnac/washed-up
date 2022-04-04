@@ -40,6 +40,9 @@
     <None Include="Sprites\Stickman_RightAlt.hexImage">
       <Filter>Sprites</Filter>
     </None>
+    <None Include="Sprites\Stickman_Skin_Head.hexImage">
+      <Filter>Sprites</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="washedUpSprites.hpp">

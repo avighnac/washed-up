@@ -148,6 +148,7 @@
     <None Include="Sprites\Stickman_LeftAlt.hexImage" />
     <None Include="Sprites\Stickman_Right.hexImage" />
     <None Include="Sprites\Stickman_RightAlt.hexImage" />
+    <None Include="Sprites\Stickman_Skin_Head.hexImage" />
     <None Include="Sprites\TrashBag.hexImage" />
   </ItemGroup>
   <ItemGroup>

@@ -1,3 +1,18 @@
+#include <washedUpSprites.hpp>
+#include <map>
+
+class coordinates {
+public:
+  int startX, startY, endX, endY;
+
+  coordinates(int sx, int sy, int ex, int ey) {
+    startX = sx;
+    startY = sy;
+    endX = ex;
+    endY = ey;
+  }
+};
+
 void items(HWND &window, tstring appdata) {
   HDC hdc = GetDC(window);
 
@@ -11,6 +26,14 @@ void items(HWND &window, tstring appdata) {
   std::fstream ironDat;
   ironDat.open((appdata + tstring(L"\\Washed Up\\items\\iron.dat")),
                  std::ios_base::in);
+
+  ironDat >> iron;
+  bottleDat >> bottle;
+  trash_bagDat >> trash_bag;
+
+  ironDat.close();
+  bottleDat.close();
+  trash_bagDat.close();
 
   while (running) {
     MSG message;
@@ -44,9 +67,53 @@ void items(HWND &window, tstring appdata) {
     }
     }
 
-    clear_screen(0xffffff);
-    draw_text(hdc, "This feature has not been coded in yet! Come back later.",
-              45, 300, 3, 0, 0xff0ff0);
+    clear_screen(0xab2b0c);
+
+    draw_text(
+        hdc, "Items", buffer_width / 2 - (buffer_width / 150 * 3 * 5),
+        buffer_height - (buffer_height / 10), buffer_width / 150, 0, 0x000000);
+
+
+    drawSprite(buffer_width - buffer_width / 16,
+               buffer_height - buffer_height / 10, 1,
+               sprites::getRustedBlockOfIron());
+    draw_text(hdc, str(iron) + "-",
+              buffer_width - buffer_width / 16 - 5 * (str(iron).length() + 1) -
+                  sprites::getRustedBlockOfIron()[0].size() * 1,
+              buffer_height - buffer_height / 10, 5, 0, 0x000000);
+
+    int boxAdjustment = 10;
+
+    std::map<std::string, coordinates> coordinatesMap;
+    coordinatesMap.insert(
+        {"blankBox",
+         coordinates(buffer_width / 200 * boxAdjustment,
+                     buffer_height / 200 * 10 + 2 * buffer_height / 3,
+                     buffer_width / 200 * (boxAdjustment + 20),
+                     buffer_height / 200 * 10 +
+                         abs(buffer_width / 200 * (boxAdjustment + 20) -
+                             buffer_width / 200 * boxAdjustment) +
+                         2 * buffer_height / 3)});
+
+    // Blank box
+    auto x = coordinatesMap.find("blankBox");
+    draw_rect(x->second.startX,
+              x->second.startY,
+              x->second.endX,
+              x->second.endY,
+              0xffffff);
+    // Blank box end
+
+    boxAdjustment += 30;
+
+    // Stickman skin
+    drawSprite(buffer_width / 200 * boxAdjustment,
+               buffer_height / 200 * 10 + 2 * buffer_height / 3,
+               std::ceil(buffer_width / 1136.0),
+               sprites::getStickman_Skin_Head());
+    // Stickman skin end
+
+    boxAdjustment += 30;
 
     StretchDIBits(hdc, 0, 0, buffer_width, buffer_height, 0, 0, buffer_width,
                   buffer_height, buffer_memory, &buffer_bitmap_info,

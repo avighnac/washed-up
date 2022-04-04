@@ -2,12 +2,15 @@
 #include "isInContact.hpp"
 #include "randomNumber.hpp"
 
+#include <map>
 #include <washedUpSprites.hpp>
 
 #define pressed(b) (input.buttons[b].is_down)
 #define draw_player(x, y) (draw_rect(x, y, x + size, y + size, 0xffffff))
 
 #define str(x) std::to_string(x)
+
+#define stretchdibits StretchDIBits(hdc, 0, 0, buffer_width, buffer_height, 0, 0, buffer_width, buffer_height, buffer_memory, &buffer_bitmap_info, DIB_RGB_COLORS, SRCCOPY)
 
 struct Button_State {
   bool is_down;
@@ -55,6 +58,16 @@ void washedUp(HWND &window, tstring appdata) {
   bool playerSprite = true;
 
   int trackPlayerX = playerX, playerXFake = playerX;
+
+  std::map<std::string, int> trashPickedUp;
+  trashPickedUp.insert({"PlasticBottle", 0});
+  trashPickedUp.insert({"TrashBag", 0});
+  trashPickedUp.insert({"RustedBlockOfIron", 0});
+
+  std::map<std::string, tstring> fileNames;
+  fileNames.insert({"PlasticBottle", tstring(L"bottle.dat")});
+  fileNames.insert({"TrashBag", tstring(L"trash_bag.dat")});
+  fileNames.insert({"RustedBlockOfIron", tstring(L"iron.dat")});
 
   while (running) {
     auto start = std::chrono::high_resolution_clock::now();
@@ -203,6 +216,7 @@ void washedUp(HWND &window, tstring appdata) {
                 sprites[i].endX + wasteCoordinatesX, sprites[i].endY)) {
 
           score += pointsForPickup;
+          trashPickedUp.find(sprites[i].spriteName)->second++;
           erase_element_at_pos(sprites, i);
           i--;
         }
@@ -246,5 +260,22 @@ void washedUp(HWND &window, tstring appdata) {
                        std::ios_base::app | std::ios_base::in);
     scoreboardDat << score << " ";
     scoreboardDat.close();
+  }
+  for (auto &i : trashPickedUp) {
+    if (i.second > 0) {
+      std::fstream outFile(appdata + tstring(L"\\Washed Up\\items\\") + fileNames.find(i.first)->second);
+      int count = 0;
+      outFile >> count;
+      count += i.second;
+      outFile.close();
+      outFile.open(appdata + tstring(L"\\Washed Up\\items\\") +
+                       fileNames.find(i.first)->second,
+                   std::ofstream::out | std::ofstream::trunc);
+      outFile.close();
+      outFile.open(appdata + tstring(L"\\Washed Up\\items\\") +
+                           fileNames.find(i.first)->second);
+      outFile << count;
+      outFile.close();
+    }
   }
 }

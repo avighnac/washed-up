@@ -11,6 +11,7 @@
 #include "Sprites/Stickman_LeftAlt.hexImage"
 #include "Sprites/Stickman_Right.hexImage"
 #include "Sprites/Stickman_RightAlt.hexImage"
+#include "Sprites/Stickman_Skin_Head.hexImage"
 
 std::vector<std::vector<unsigned int>> &sprites::getBeach() { return Beach; }
 std::vector<std::vector<unsigned int>> &sprites::getPlasticBottle() { return PlasticBottle; }
@@ -21,3 +22,4 @@ std::vector<std::vector<unsigned int>> &sprites::getStickman_Left() { return Sti
 std::vector<std::vector<unsigned int>> &sprites::getStickman_LeftAlt() { return Stickman_LeftAlt; }
 std::vector<std::vector<unsigned int>> &sprites::getStickman_Right() { return Stickman_Right; }
 std::vector<std::vector<unsigned int>> &sprites::getStickman_RightAlt() { return Stickman_RightAlt; }
+std::vector<std::vector<unsigned int>> &sprites::getStickman_Skin_Head() { return Stickman_Skin_Head; }
