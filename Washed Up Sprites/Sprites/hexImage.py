@@ -1,7 +1,3 @@
-'''
-1. Make a python application that takes an image file as input and prints out the hex value of every pixel (for example white: 0xffffff).
-'''
-
 from PIL import Image
 import sys
 
