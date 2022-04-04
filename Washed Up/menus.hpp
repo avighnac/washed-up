@@ -105,8 +105,11 @@ int mainMenu(HWND &window) {
                           buffer_height / 2 - buffer_width / 35,
                           pos + (4 * 6 * mainMenuOptions[i].length()) +
                               buffer_width / 35,
-                          buffer_height / 2 + (5 * 4) + buffer_width / 35))
+                          buffer_height / 2 + (5 * 4) + buffer_width / 35)) {
+          if (mainMenuOption == i)
+            return i;
           mainMenuOption = i;
+        }
 
         pos += buffer_width / 5 * (i + 1);
       }
