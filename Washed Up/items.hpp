@@ -1,5 +1,5 @@
-#include <washedUpSprites.hpp>
 #include <map>
+#include <washedUpSprites.hpp>
 
 class coordinates {
 public:
@@ -19,13 +19,13 @@ void items(HWND &window, tstring appdata) {
   long long bottle, trash_bag, iron;
   std::fstream bottleDat;
   bottleDat.open((appdata + tstring(L"\\Washed Up\\items\\bottle.dat")),
-                     std::ios_base::in);
+                 std::ios_base::in);
   std::fstream trash_bagDat;
   trash_bagDat.open((appdata + tstring(L"\\Washed Up\\items\\trash_bag.dat")),
-                 std::ios_base::in);
+                    std::ios_base::in);
   std::fstream ironDat;
   ironDat.open((appdata + tstring(L"\\Washed Up\\items\\iron.dat")),
-                 std::ios_base::in);
+               std::ios_base::in);
 
   ironDat >> iron;
   bottleDat >> bottle;
@@ -69,10 +69,9 @@ void items(HWND &window, tstring appdata) {
 
     clear_screen(0xab2b0c);
 
-    draw_text(
-        hdc, "Items", buffer_width / 2 - (buffer_width / 150 * 3 * 5),
-        buffer_height - (buffer_height / 10), buffer_width / 150, 0, 0x000000);
-
+    draw_text(hdc, "Items", buffer_width / 2 - (buffer_width / 150 * 3 * 5),
+              buffer_height - (buffer_height / 10), buffer_width / 150, 0,
+              0x000000);
 
     drawSprite(buffer_width - buffer_width / 16,
                buffer_height - buffer_height / 10, 1,
@@ -94,26 +93,46 @@ void items(HWND &window, tstring appdata) {
                          abs(buffer_width / 200 * (boxAdjustment + 20) -
                              buffer_width / 200 * boxAdjustment) +
                          2 * buffer_height / 3)});
+    boxAdjustment += 30;
+    coordinatesMap.insert(
+        {"stickman_skin_head",
+         coordinates(buffer_width / 200 * boxAdjustment,
+                     buffer_height / 200 * 10 + 2 * buffer_height / 3,
+                     buffer_width / 200 * boxAdjustment +
+                         std::ceil(buffer_width / 1136.0) *
+                             sprites::getStickman_Skin_Head()[0].size(),
+                     buffer_height / 200 * 10 + 2 * buffer_height / 3 +
+                         std::ceil(buffer_width / 1136.0) *
+                             sprites::getStickman_Skin_Head().size())});
 
     // Blank box
     auto x = coordinatesMap.find("blankBox");
-    draw_rect(x->second.startX,
-              x->second.startY,
-              x->second.endX,
-              x->second.endY,
-              0xffffff);
+    draw_rect(x->second.startX, x->second.startY, x->second.endX,
+              x->second.endY, 0xffffff);
     // Blank box end
 
-    boxAdjustment += 30;
-
     // Stickman skin
-    drawSprite(buffer_width / 200 * boxAdjustment,
-               buffer_height / 200 * 10 + 2 * buffer_height / 3,
+    x = coordinatesMap.find("stickman_skin_head");
+    drawSprite(x->second.startX,
+               x->second.startY,
                std::ceil(buffer_width / 1136.0),
                sprites::getStickman_Skin_Head());
     // Stickman skin end
 
     boxAdjustment += 30;
+
+    POINT pt;
+    GetCursorPos(&pt);
+    ScreenToClient(window, &pt);
+    pt.y = buffer_height - pt.y;
+
+    for (auto &i : coordinatesMap) {
+      if (isInContact2D(pt.x, pt.y, pt.x, pt.y, i.second.startX,
+                        i.second.startY, i.second.endX, i.second.endY)) {
+        draw_rect(i.second.startX, i.second.startY - buffer_height / 20 - buffer_height / 100,
+                  i.second.endX, i.second.startY - buffer_height / 100, 0x00ff00);
+      }
+    }
 
     StretchDIBits(hdc, 0, 0, buffer_width, buffer_height, 0, 0, buffer_width,
                   buffer_height, buffer_memory, &buffer_bitmap_info,
