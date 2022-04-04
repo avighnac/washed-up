@@ -35,6 +35,30 @@ void items(HWND &window, tstring appdata) {
   bottleDat.close();
   trash_bagDat.close();
 
+  int boxAdjustment = 10;
+
+  std::map<std::string, coordinates> coordinatesMap;
+  coordinatesMap.insert(
+      {"blankBox",
+       coordinates(buffer_width / 200 * boxAdjustment,
+                   buffer_height / 200 * 10 + 2 * buffer_height / 3,
+                   buffer_width / 200 * (boxAdjustment + 20),
+                   buffer_height / 200 * 10 +
+                       abs(buffer_width / 200 * (boxAdjustment + 20) -
+                           buffer_width / 200 * boxAdjustment) +
+                       2 * buffer_height / 3)});
+  boxAdjustment += 30;
+  coordinatesMap.insert(
+      {"stickman_skin_head",
+       coordinates(buffer_width / 200 * boxAdjustment,
+                   buffer_height / 200 * 10 + 2 * buffer_height / 3,
+                   buffer_width / 200 * boxAdjustment +
+                       std::ceil(buffer_width / 1136.0) *
+                           sprites::getStickman_Skin_Head()[0].size(),
+                   buffer_height / 200 * 10 + 2 * buffer_height / 3 +
+                       std::ceil(buffer_width / 1136.0) *
+                           sprites::getStickman_Skin_Head().size())});
+
   while (running) {
     MSG message;
     PeekMessage(&message, window, 0, 0, PM_REMOVE);
@@ -80,30 +104,6 @@ void items(HWND &window, tstring appdata) {
               buffer_width - buffer_width / 16 - 5 * (str(iron).length() + 1) -
                   sprites::getRustedBlockOfIron()[0].size() * 1,
               buffer_height - buffer_height / 10, 5, 0, 0x000000);
-
-    int boxAdjustment = 10;
-
-    std::map<std::string, coordinates> coordinatesMap;
-    coordinatesMap.insert(
-        {"blankBox",
-         coordinates(buffer_width / 200 * boxAdjustment,
-                     buffer_height / 200 * 10 + 2 * buffer_height / 3,
-                     buffer_width / 200 * (boxAdjustment + 20),
-                     buffer_height / 200 * 10 +
-                         abs(buffer_width / 200 * (boxAdjustment + 20) -
-                             buffer_width / 200 * boxAdjustment) +
-                         2 * buffer_height / 3)});
-    boxAdjustment += 30;
-    coordinatesMap.insert(
-        {"stickman_skin_head",
-         coordinates(buffer_width / 200 * boxAdjustment,
-                     buffer_height / 200 * 10 + 2 * buffer_height / 3,
-                     buffer_width / 200 * boxAdjustment +
-                         std::ceil(buffer_width / 1136.0) *
-                             sprites::getStickman_Skin_Head()[0].size(),
-                     buffer_height / 200 * 10 + 2 * buffer_height / 3 +
-                         std::ceil(buffer_width / 1136.0) *
-                             sprites::getStickman_Skin_Head().size())});
 
     // Blank box
     auto x = coordinatesMap.find("blankBox");
