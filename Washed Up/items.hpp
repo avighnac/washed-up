@@ -105,6 +105,28 @@ void items(HWND &window, tstring appdata) {
                   sprites::getRustedBlockOfIron()[0].size() * 1,
               buffer_height - buffer_height / 10, 5, 0, 0x000000);
 
+    boxAdjustment = 10;
+
+    coordinatesMap.find("blankBox")->second =
+        coordinates(buffer_width / 200 * boxAdjustment,
+                    buffer_height / 200 * 10 + 2 * buffer_height / 3,
+                    buffer_width / 200 * (boxAdjustment + 20),
+                    buffer_height / 200 * 10 +
+                        abs(buffer_width / 200 * (boxAdjustment + 20) -
+                            buffer_width / 200 * boxAdjustment) +
+                        2 * buffer_height / 3);
+    boxAdjustment += 30;
+    coordinatesMap.find("stickman_skin_head")->second =
+        coordinates(buffer_width / 200 * boxAdjustment,
+                    buffer_height / 200 * 10 + 2 * buffer_height / 3,
+                    buffer_width / 200 * boxAdjustment +
+                        std::ceil(buffer_width / 1136.0) *
+                            sprites::getStickman_Skin_Head()[0].size(),
+                    buffer_height / 200 * 10 + 2 * buffer_height / 3 +
+                        std::ceil(buffer_width / 1136.0) *
+                            sprites::getStickman_Skin_Head().size());
+
+
     // Blank box
     auto x = coordinatesMap.find("blankBox");
     draw_rect(x->second.startX, x->second.startY, x->second.endX,
