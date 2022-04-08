@@ -88,12 +88,20 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
     std::ofstream scoreboard(appdata + tstring(L"\\Washed Up\\scoreboard.dat"));
     std::filesystem::create_directory(appdata + tstring(L"\\Washed Up\\items"));
     std::ofstream bottle(appdata + tstring(L"\\Washed Up\\items\\bottle.dat"));
-    std::ofstream trash_bag(appdata + tstring(L"\\Washed Up\\items\\trash_bag.dat"));
+    std::ofstream trash_bag(appdata +
+                            tstring(L"\\Washed Up\\items\\trash_bag.dat"));
     std::ofstream iron(appdata + tstring(L"\\Washed Up\\items\\iron.dat"));
+    std::ofstream unlocked(appdata +
+                           tstring(L"\\Washed Up\\items\\unlocked.dat"));
+    std::ofstream selectedSkin(appdata +
+                           tstring(L"\\Washed Up\\items\\selectedSkin.dat"));
+    selectedSkin << "blankBox";
     scoreboard.close();
     bottle.close();
     trash_bag.close();
     iron.close();
+    unlocked.close();
+    selectedSkin.close();
   }
 
   const wchar_t class_name[] = L"Washed Up";

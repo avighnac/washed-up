@@ -2,9 +2,6 @@
 #include "isInContact.hpp"
 #include "randomNumber.hpp"
 
-#include <map>
-#include <washedUpSprites.hpp>
-
 #define pressed(b) (input.buttons[b].is_down)
 #define draw_player(x, y) (draw_rect(x, y, x + size, y + size, 0xffffff))
 
@@ -41,6 +38,19 @@ static void erase_element_at_pos(std::vector<Sprite> &vec, size_t position) {
   vec = answer;
 }
 
+std::string read_from_file(tstring path) {
+  std::string output;
+
+  std::ifstream file(path, std::ios_base::in);
+  std::string line;
+
+  while (std::getline(file, line))
+    output += line + '\n';
+
+  output.pop_back();
+  return output;
+}
+
 void washedUp(HWND &window, tstring appdata) {
 
   HDC hdc = GetDC(window);
@@ -68,6 +78,9 @@ void washedUp(HWND &window, tstring appdata) {
   fileNames.insert({"PlasticBottle", tstring(L"bottle.dat")});
   fileNames.insert({"TrashBag", tstring(L"trash_bag.dat")});
   fileNames.insert({"RustedBlockOfIron", tstring(L"iron.dat")});
+
+  std::string selectedSkin =
+      read_from_file(appdata + tstring(L"\\Washed Up\\items\\selectedSkin.dat"));
 
   while (running) {
     auto start = std::chrono::high_resolution_clock::now();
@@ -223,21 +236,26 @@ void washedUp(HWND &window, tstring appdata) {
       }
     }
 
-    if (!playerOrientedRight) {
-      if (playerSprite)
-        drawSprite(playerX + buffer_width / 4, playerY, 1,
-                   sprites::getStickman_Left());
-      else
-        drawSprite(playerX + buffer_width / 4, playerY, 1,
-                   sprites::getStickman_LeftAlt());
-    } else {
-      if (playerSprite)
-        drawSprite(playerX + buffer_width / 4, playerY, 1,
-                   sprites::getStickman_Right());
-      else
-        drawSprite(playerX + buffer_width / 4, playerY, 1,
-                   sprites::getStickman_RightAlt());
+    if (selectedSkin == "stickman_skin_head") {
+      if (!playerOrientedRight) {
+        if (playerSprite)
+          drawSprite(playerX + buffer_width / 4, playerY, 1,
+                     sprites::getStickman_Left());
+        else
+          drawSprite(playerX + buffer_width / 4, playerY, 1,
+                     sprites::getStickman_LeftAlt());
+      } else {
+        if (playerSprite)
+          drawSprite(playerX + buffer_width / 4, playerY, 1,
+                     sprites::getStickman_Right());
+        else
+          drawSprite(playerX + buffer_width / 4, playerY, 1,
+                     sprites::getStickman_RightAlt());
+      }
     }
+
+    else if (selectedSkin == "blankBox")
+      draw_player(playerX + buffer_width / 4, playerY);
 
     draw_text(hdc, str(score), buffer_width / 10 * 9, (buffer_height / 10 * 9),
               buffer_width / 300, 0, 0xffffff);

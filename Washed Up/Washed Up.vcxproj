@@ -184,7 +184,9 @@
     </ClInclude>
     <ClInclude Include="randomNumber.hpp" />
     <ClInclude Include="scoreboard.hpp" />
+    <ClInclude Include="selectedItemMenu.hpp" />
     <ClInclude Include="Sprite.hpp" />
+    <ClInclude Include="stickman_skinMenu.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Washed Up Sprites\Washed Up Sprites.vcxproj">

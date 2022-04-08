@@ -1,8 +1,6 @@
 #pragma once
 
 #include "randomNumber.hpp"
-#include <washedUpSprites.hpp>
-
 void drawSprite(int startX, int startY, int size,
                 std::vector<std::vector<unsigned int>> &spriteVec) {
   for (auto y = 0; y < spriteVec.size(); y++) {

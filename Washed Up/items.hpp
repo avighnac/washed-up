@@ -1,6 +1,3 @@
-#include <map>
-#include <washedUpSprites.hpp>
-
 class coordinates {
 public:
   int startX, startY, endX, endY;
@@ -12,6 +9,8 @@ public:
     endY = ey;
   }
 };
+
+std::string selectedSkin;
 
 void items(HWND &window, tstring appdata) {
   HDC hdc = GetDC(window);
@@ -34,6 +33,18 @@ void items(HWND &window, tstring appdata) {
   ironDat.close();
   bottleDat.close();
   trash_bagDat.close();
+
+  std::map<std::string, bool> unlocked;
+  std::ifstream unlocked_file(appdata +
+                              tstring(L"\\Washed Up\\items\\unlocked.dat"));
+
+  std::string line;
+  while (std::getline(unlocked_file, line)) {
+    std::string key = line.substr(0, line.find(":"));
+    std::string value = line.substr(line.find(":") + 1, line.length());
+    unlocked.insert({key, value == " true"});
+  }
+  unlocked_file.close();
 
   int boxAdjustment = 10;
 
@@ -58,6 +69,8 @@ void items(HWND &window, tstring appdata) {
                    buffer_height / 200 * 10 + 2 * buffer_height / 3 +
                        std::ceil(buffer_width / 1136.0) *
                            sprites::getStickman_Skin_Head().size())});
+
+  bool prevMouseState = false;
 
   while (running) {
     MSG message;
@@ -100,8 +113,9 @@ void items(HWND &window, tstring appdata) {
     drawSprite(buffer_width - buffer_width / 16,
                buffer_height - buffer_height / 10, 1,
                sprites::getRustedBlockOfIron());
-    draw_text(hdc, str(iron) + "-",
-              buffer_width - buffer_width / 16 - 5 * (str(iron).length() + 1) -
+    draw_text(hdc, std::to_string(iron) + "-",
+              buffer_width - buffer_width / 16 -
+                  5 * (std::to_string(iron).length() + 1) -
                   sprites::getRustedBlockOfIron()[0].size() * 1,
               buffer_height - buffer_height / 10, 5, 0, 0x000000);
 
@@ -126,7 +140,6 @@ void items(HWND &window, tstring appdata) {
                         std::ceil(buffer_width / 1136.0) *
                             sprites::getStickman_Skin_Head().size());
 
-
     // Blank box
     auto x = coordinatesMap.find("blankBox");
     draw_rect(x->second.startX, x->second.startY, x->second.endX,
@@ -135,29 +148,67 @@ void items(HWND &window, tstring appdata) {
 
     // Stickman skin
     x = coordinatesMap.find("stickman_skin_head");
-    drawSprite(x->second.startX,
-               x->second.startY,
+    drawSprite(x->second.startX, x->second.startY,
                std::ceil(buffer_width / 1136.0),
                sprites::getStickman_Skin_Head());
     // Stickman skin end
-
-    boxAdjustment += 30;
 
     POINT pt;
     GetCursorPos(&pt);
     ScreenToClient(window, &pt);
     pt.y = buffer_height - pt.y;
 
-    for (auto &i : coordinatesMap) {
+    for (auto &i : coordinatesMap)
       if (isInContact2D(pt.x, pt.y, pt.x, pt.y, i.second.startX,
-                        i.second.startY, i.second.endX, i.second.endY)) {
-        draw_rect(i.second.startX, i.second.startY - buffer_height / 20 - buffer_height / 100,
-                  i.second.endX, i.second.startY - buffer_height / 100, 0x00ff00);
+                        i.second.startY, i.second.endX, i.second.endY))
+        draw_rect(i.second.startX,
+                  i.second.startY - buffer_height / 20 - buffer_height / 100,
+                  i.second.endX, i.second.startY - buffer_height / 100,
+                  0x00ff00);
+
+    if (GetKeyState(VK_LBUTTON) < 0 && !prevMouseState) {
+      prevMouseState = true;
+      mouse_event(MOUSEEVENTF_LEFTUP, pt.x, pt.y, 0, 0);
+      for (auto &i : coordinatesMap) {
+        if (isInContact2D(pt.x, pt.y, pt.x, pt.y, i.second.startX,
+                          i.second.startY, i.second.endX, i.second.endY)) {
+
+          if (i.first == "blankBox") {
+#include "selectedItemMenu.hpp"
+            unlocked.find("blankBox")->second = true;
+            selectedSkin = i.first;
+          } else if (i.first == "stickman_skin_head") {
+#include "stickman_skinMenu.hpp"
+            if (unlocked.find("stickman_skin_head")->second)
+              selectedSkin = i.first;
+          }
+        }
       }
-    }
+    } else
+      prevMouseState = false;
 
     StretchDIBits(hdc, 0, 0, buffer_width, buffer_height, 0, 0, buffer_width,
                   buffer_height, buffer_memory, &buffer_bitmap_info,
                   DIB_RGB_COLORS, SRCCOPY);
   }
+  
+  std::ofstream outFile;
+  outFile.open(
+      appdata + tstring(L"\\Washed Up\\items\\unlocked.dat"),
+      std::ofstream::out | std::ofstream::trunc);
+  for (auto &i : unlocked)
+    outFile << i.first << ": " << (i.second ? "true" : "false") << '\n';
+  outFile.close();
+
+  if (!selectedSkin.empty()) {
+    outFile.open(
+        appdata + tstring(L"\\Washed Up\\items\\selectedSkin.dat"),
+        std::ofstream::out | std::ofstream::trunc);
+    outFile << selectedSkin;
+    outFile.close();
+  }
+
+  outFile.open(appdata + tstring(L"\\Washed Up\\items\\iron.dat"), std::ofstream::out, std::ofstream::trunc);
+  outFile << iron;
+  outFile.close();
 }
