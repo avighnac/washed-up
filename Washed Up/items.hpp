@@ -161,10 +161,17 @@ void items(HWND &window, tstring appdata) {
     for (auto &i : coordinatesMap)
       if (isInContact2D(pt.x, pt.y, pt.x, pt.y, i.second.startX,
                         i.second.startY, i.second.endX, i.second.endY))
-        draw_rect(i.second.startX,
-                  i.second.startY - buffer_height / 20 - buffer_height / 100,
-                  i.second.endX, i.second.startY - buffer_height / 100,
-                  0x00ff00);
+        unlocked.find(i.first)->second
+            ? draw_rect(i.second.startX,
+                        i.second.startY - buffer_height / 20 -
+                            buffer_height / 100,
+                        i.second.endX, i.second.startY - buffer_height / 100,
+                        0x00ff00)
+            : draw_rect(i.second.startX,
+                        i.second.startY - buffer_height / 20 -
+                            buffer_height / 100,
+                        i.second.endX, i.second.startY - buffer_height / 100,
+                        0xffa500);
 
     if (GetKeyState(VK_LBUTTON) < 0 && !prevMouseState) {
       prevMouseState = true;

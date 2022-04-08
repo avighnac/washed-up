@@ -91,8 +91,12 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
     std::ofstream trash_bag(appdata +
                             tstring(L"\\Washed Up\\items\\trash_bag.dat"));
     std::ofstream iron(appdata + tstring(L"\\Washed Up\\items\\iron.dat"));
+    bottle << "0";
+    iron << "0";
+    trash_bag << "0";
     std::ofstream unlocked(appdata +
                            tstring(L"\\Washed Up\\items\\unlocked.dat"));
+    unlocked << "blankBox: true\nstickman_skin_head: false\n";
     std::ofstream selectedSkin(appdata +
                            tstring(L"\\Washed Up\\items\\selectedSkin.dat"));
     selectedSkin << "blankBox";
