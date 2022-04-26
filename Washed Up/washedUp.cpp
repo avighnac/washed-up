@@ -15,7 +15,7 @@ struct Button_State {
 };
 
 struct Input {
-  Menu_Button_State buttons[BUTTON_COUNT];
+  Button_State buttons[BUTTON_COUNT];
 };
 
 Input input = {};
@@ -85,7 +85,7 @@ void washedUp(HWND &window, tstring appdata) {
   while (running) {
     auto start = std::chrono::high_resolution_clock::now();
     MSG message;
-    PeekMessage(&message, window, 0, 0, PM_REMOVE);
+    if (PeekMessage(&message, window, 0, 0, PM_REMOVE) > 0) {
 
     switch (message.message) {
     case WM_KEYUP:
@@ -93,11 +93,11 @@ void washedUp(HWND &window, tstring appdata) {
       unsigned int vk_code = (unsigned int)message.wParam;
       bool is_down = ((message.lParam & (1 << 31)) == 0);
 
-#define process_button(b, vk)                                                  \
-  case vk: {                                                                   \
-    input.buttons[b].changed = is_down != input.buttons[b].is_down;            \
-    input.buttons[b].is_down = is_down;                                        \
-  } break;
+      #define process_button(b, vk)                                                  \
+        case vk: {                                                                   \
+          input.buttons[b].changed = is_down != input.buttons[b].is_down;            \
+          input.buttons[b].is_down = is_down;                                        \
+        } break;
 
       switch (vk_code) {
         process_button(BUTTON_UP, VK_UP);
@@ -269,6 +269,7 @@ void washedUp(HWND &window, tstring appdata) {
         std::chrono::duration_cast<std::chrono::milliseconds>(end - start)
             .count() /
         1000.0;
+    }
   }
 
   if (score >

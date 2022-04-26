@@ -35,7 +35,7 @@ int mainMenu(HWND &window) {
 
   while (running) {
     MSG message;
-    PeekMessage(&message, window, 0, 0, PM_REMOVE);
+    if (PeekMessage(&message, window, 0, 0, PM_REMOVE) > 0) {
 
     switch (message.message) {
     case WM_KEYUP:
@@ -134,4 +134,5 @@ int mainMenu(HWND &window) {
                   buffer_height, buffer_memory, &buffer_bitmap_info,
                   DIB_RGB_COLORS, SRCCOPY);
   }
+}
 }

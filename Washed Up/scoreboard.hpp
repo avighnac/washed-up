@@ -14,7 +14,7 @@ void scoreboard(HWND &window, tstring appdata) {
 
   while (running) {
     MSG message;
-    PeekMessage(&message, window, 0, 0, PM_REMOVE);
+    if (PeekMessage(&message, window, 0, 0, PM_REMOVE) > 0) {
 
     switch (message.message) {
     case WM_KEYUP:
@@ -60,5 +60,6 @@ void scoreboard(HWND &window, tstring appdata) {
     StretchDIBits(hdc, 0, 0, buffer_width, buffer_height, 0, 0, buffer_width,
                   buffer_height, buffer_memory, &buffer_bitmap_info,
                   DIB_RGB_COLORS, SRCCOPY);
+  }
   }
 }
