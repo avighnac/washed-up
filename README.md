@@ -5,7 +5,7 @@ A game for the game jam being held by PolyMars for #teamseas!
 ## Screenshots
 
 <p>
-  <img src="https://user-images.githubusercontent.com/74564976/161370570-43a42cbb-512b-4714-810b-7a84a7215105.png"></img>
+  <img src="https://user-images.githubusercontent.com/74564976/162433137-69777ed8-cc33-4a8b-94e3-b0868a4118a2.png"></img>
   <img src="https://user-images.githubusercontent.com/74564976/161370809-ccb9fe7e-0fad-413d-a671-8533f24526b8.png"></img>
 </p>
 
