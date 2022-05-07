@@ -7,7 +7,10 @@
 
 #define str(x) std::to_string(x)
 
-#define stretchdibits StretchDIBits(hdc, 0, 0, buffer_width, buffer_height, 0, 0, buffer_width, buffer_height, buffer_memory, &buffer_bitmap_info, DIB_RGB_COLORS, SRCCOPY)
+#define stretchdibits                                                          \
+  StretchDIBits(hdc, 0, 0, buffer_width, buffer_height, 0, 0, buffer_width,    \
+                buffer_height, buffer_memory, &buffer_bitmap_info,             \
+                DIB_RGB_COLORS, SRCCOPY)
 
 struct Button_State {
   bool is_down;
@@ -79,25 +82,24 @@ void washedUp(HWND &window, tstring appdata) {
   fileNames.insert({"TrashBag", tstring(L"trash_bag.dat")});
   fileNames.insert({"RustedBlockOfIron", tstring(L"iron.dat")});
 
-  std::string selectedSkin =
-      read_from_file(appdata + tstring(L"\\Washed Up\\items\\selectedSkin.dat"));
+  std::string selectedSkin = read_from_file(
+      appdata + tstring(L"\\Washed Up\\items\\selectedSkin.dat"));
 
   while (running) {
     auto start = std::chrono::high_resolution_clock::now();
     MSG message;
-    if (PeekMessage(&message, window, 0, 0, PM_REMOVE) > 0) {
-
+    PeekMessage(&message, window, 0, 0, PM_REMOVE) > 0;
     switch (message.message) {
     case WM_KEYUP:
     case WM_KEYDOWN: {
       unsigned int vk_code = (unsigned int)message.wParam;
       bool is_down = ((message.lParam & (1 << 31)) == 0);
 
-      #define process_button(b, vk)                                                  \
-        case vk: {                                                                   \
-          input.buttons[b].changed = is_down != input.buttons[b].is_down;            \
-          input.buttons[b].is_down = is_down;                                        \
-        } break;
+#define process_button(b, vk)                                                  \
+  case vk: {                                                                   \
+    input.buttons[b].changed = is_down != input.buttons[b].is_down;            \
+    input.buttons[b].is_down = is_down;                                        \
+  } break;
 
       switch (vk_code) {
         process_button(BUTTON_UP, VK_UP);
@@ -269,7 +271,6 @@ void washedUp(HWND &window, tstring appdata) {
         std::chrono::duration_cast<std::chrono::milliseconds>(end - start)
             .count() /
         1000.0;
-    }
   }
 
   if (score >
@@ -282,7 +283,8 @@ void washedUp(HWND &window, tstring appdata) {
   }
   for (auto &i : trashPickedUp) {
     if (i.second > 0) {
-      std::fstream outFile(appdata + tstring(L"\\Washed Up\\items\\") + fileNames.find(i.first)->second);
+      std::fstream outFile(appdata + tstring(L"\\Washed Up\\items\\") +
+                           fileNames.find(i.first)->second);
       int count = 0;
       outFile >> count;
       count += i.second;
@@ -292,7 +294,7 @@ void washedUp(HWND &window, tstring appdata) {
                    std::ofstream::out | std::ofstream::trunc);
       outFile.close();
       outFile.open(appdata + tstring(L"\\Washed Up\\items\\") +
-                           fileNames.find(i.first)->second);
+                   fileNames.find(i.first)->second);
       outFile << count;
       outFile.close();
     }
