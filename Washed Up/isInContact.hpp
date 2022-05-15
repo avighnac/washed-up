@@ -25,7 +25,8 @@ bool isInContact2D(int startX, int startY, int endX, int endY, int objStartX,
   if (endX > objStartX && endX < objEndX && startY > objStartY &&
       startY < objEndY)
     return true;
-  if (startX < objStartX && objStartX < objEndX && objEndX < endX)
+  if (startX < objStartX && objStartX < objEndX && objEndX < endX &&
+      startY < objStartY && objStartY < objEndY && objEndY < endY)
     return true;
 
   if (isInContact1D(startX, endX, objStartX) &&
