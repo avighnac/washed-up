@@ -114,6 +114,7 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
   window_class.hInstance = hInstance;
   window_class.lpszClassName = class_name;
   window_class.lpfnWndProc = window_callback;
+  window_class.hCursor = LoadCursor(NULL, IDC_ARROW);
 
   RegisterClass(&window_class);
   HWND window = CreateWindowExW(0, class_name, window_class.lpszClassName,

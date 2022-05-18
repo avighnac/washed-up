@@ -88,7 +88,7 @@ void washedUp(HWND &window, tstring appdata) {
   while (running) {
     auto start = std::chrono::high_resolution_clock::now();
     MSG message;
-    PeekMessage(&message, window, 0, 0, PM_REMOVE) > 0;
+    PeekMessage(&message, window, 0, 0, PM_REMOVE);
     switch (message.message) {
     case WM_KEYUP:
     case WM_KEYDOWN: {
